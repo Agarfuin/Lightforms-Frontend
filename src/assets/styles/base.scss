@@ -1,0 +1,93 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+body {
+  background-color: #E8E8EA;
+
+}
+
+img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  /* - fill bulunan kutuyu komple işgal ediyo resmin boyutunu önemsemeden
+  - cover kutuyu kaplıyo ama zoom atıyo gibi
+  - contain resmin boyutunu bozmuyo kutunun boyutuna göre konum alıyo*/
+}
+
+#header {
+  background-color: #E8E8EA;
+  box-shadow: 0px 1px 4px rgba($color: #000000, $alpha: 0.2);
+  position: sticky;
+  margin-bottom: 20px;
+  top: 0;
+  left: 0;
+  right: 0;
+
+  &.logged{
+    background-color: #776A56;
+    color: #FEFDFD;
+  }
+
+  &-container {
+    display: flex;
+    justify-content: space-between;
+    #header-left {
+      display: flex;
+      gap: 10px;
+      /*flex-direction: row; default olarak bu şekilde zaten*/
+      align-items: center;
+      #header-logo {
+        width: 50px;
+        height: 50px;
+        img {
+          border-radius: 8px;
+        }
+      }
+      
+      #logo-title {
+        color: #332c2b;
+        font-size: 24px;
+        font-family: 'Baloo Thambi 2', cursive !important;
+        &.logged {
+          color:#FEFDFD;
+        }
+      }
+    }
+
+    #header-right {
+      display: flex;
+      align-items: center;
+      #start-button {
+        width: 200px;
+        height: 43px;
+        background: #776a56;
+        border-radius: 10px;
+        border-style: none;
+        color: #fefdfd;
+        font-weight: 500;
+        font-size: 19px;
+        transition: ease 0.3s;
+        letter-spacing: 1px;
+        cursor: pointer;
+        box-shadow: 0 5px 5px 0 rgba(0,0,0,0.24),0 2px 10px 0 rgba(0,0,0,0.19);
+
+        &:hover {
+          font-size: 20px;
+          background: #8a7960;
+        }
+      }
+    }
+  }
+}
+
+.container {
+  width: 100%;
+  max-width: 1280px;
+  margin: auto;
+  padding: 10px 20px;
+}
