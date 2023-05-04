@@ -7,11 +7,11 @@ import "../assets/styles/dashboard.scss";
 const Dashboard = () => {
   return (
     <>
-      <Header /* isLoggedIn={true} */ isLoggedIn />
+      <Header /* isDashboard={true} */ isDashboard/>
       <main id="dashboard">
         <div className="container">
           <div className="dashboard-container">
-
+            
           </div>
         </div>
       </main>

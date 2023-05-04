@@ -2,6 +2,7 @@ import React, { useState } from "react";
 
 //Styles
 import "../assets/styles/registration.scss";
+import { Link } from "react-router-dom";
 
 const Registration = () => {
   const [swapPanel, setSwapPanel] = useState(false);
@@ -16,14 +17,9 @@ const Registration = () => {
   return (
     <>
       <main id="registration">
-        <div
-          className={["container", swapPanel ? "right-panel-active" : null]
-            .filter(Boolean)
-            .join(" ")}
-          id="container"
-        >
+        <div className="container">
           <div className="registration-container">
-            <div className="registration-container sign-up-container">
+            <div className={`sign-up-container ${swapPanel ? `right-panel-active` : ``}`}>
               <form action="#" method="post">
                 <h2>Sign Up</h2>
                 <label for="name">
@@ -51,13 +47,13 @@ const Registration = () => {
                   <input type="password" id="confirm-password" required />
                 </label>
 
-                <a href="/dashboard" target="_blank">
+                <Link to="/dashboard">
                   <button onClick={signUpButton}>SIGN UP</button>
-                </a>
+                </Link>
               </form>
             </div>
 
-            <div className="registration-container sign-in-container">
+            <div className={`sign-in-container ${swapPanel ? `right-panel-active` : ``}`}>
               <form action="/dashboard">
                 <h2>Sign In</h2>
                 <label for="e-mail">
@@ -75,24 +71,22 @@ const Registration = () => {
                   <input type="password" id="password" required />
                 </label>
 
-                <a href="/dashboard" target="_blank">
+                <Link to="/dashboard">
                   <button onClick={signInButton}>SIGN IN</button>
-                </a>
-
-                {/* Remember me ve forgot password olacak mÄ±????? */}
+                </Link>
               </form>
             </div>
 
-            <div className="overlay-container">
-              <div className="overlay">
-                <div className="overlay-panel  overlay-left">
+            <div className={`overlay-container ${swapPanel ? `right-panel-active` : ``}`}>
+              <div className={`overlay ${swapPanel ? `right-panel-active` : ``}`}>
+                <div className={`overlay-panel overlay-left ${swapPanel ? `right-panel-active` : ``}`}>
                   <h1>Already have an account?</h1>
                   <button className="ghost" id="signIn" onClick={signInButton}>
                     SIGN IN
                   </button>
                 </div>
 
-                <div className="overlay-panel overlay-right">
+                <div className={`overlay-panel overlay-right ${swapPanel ? `right-panel-active` : ``}`}>
                   <h1>Don't have an account?</h1>
                   <button className="ghost" id="signUp" onClick={signUpButton}>
                     SIGN UP

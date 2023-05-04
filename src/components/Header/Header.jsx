@@ -1,33 +1,51 @@
-import React from "react";
+import { Link } from "react-router-dom";
+import { useState } from "react";
+
+//Assets
 import Logo from "../../assets/images/logo_w_text.png";
+import "../../assets/styles/header.scss";
 
-export default function Header({ isLoggedIn }) {
+export default function Header({ isDashboard }) {
+
+  const [open, setOpen] = useState(false);
+
+  const openDropdown = () => {
+    setOpen(!open)
+  };
+
   return (
-    <header id="header" className={isLoggedIn && "logged"}>
+    <div id="header" className={isDashboard && "dashboard"}>
       <div className="container">
-        <div id="header-container">
-          <div id="header-left">
-            <div id="header-logo">
-              <a href="/" target="_blank">
-                <img src={Logo} alt="logo" />
-              </a>
+        <div className="left">
+          <Link to="/">
+            <img src={Logo} alt="logo" className="logo" />
+          </Link>
+          <span>Lightweight Forms</span>
+        </div>
+        <div className="right">
+          {!isDashboard ? (
+            <Link to="/registration">
+              <button className="startButton">Start Creating!</button>
+            </Link>
+          ) : (
+            <div className="profileMenu">
+              <button className="profileButton" onClick={openDropdown}>
+                A
+              </button>
+              {open ? (
+                <div className="dropdown-container" id="dropdownMenu">
+                  <div className="dropdown">
+                    <span>Hello Alex!</span>
+                    <Link to="/">
+                      <button className="signoutButton">Sign Out</button>
+                    </Link>
+                  </div>
+                </div>
+              ): null}
             </div>
-            <h1 id="logo-title">Lightweight Forms</h1>
-          </div>
-          <div id="header-right">
-            {!isLoggedIn ? (
-              <a href="/registration" target="_blank">
-                <button id="start-button">Start Creating!</button>
-              </a>
-            ) : (
-              /* Dashboard'ın dropdown elementi buraya yazılacak */
-              <span>Dropdown</span>
-            )}
-
-            
-          </div>
+          )}
         </div>
       </div>
-    </header>
+    </div>
   );
 }

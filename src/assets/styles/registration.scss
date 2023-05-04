@@ -19,7 +19,7 @@
 	flex-direction: column;
     height: 100vh;
 	margin: -20px 0 50px;
-    color: #332C2B;
+    color: var(--text-color);
 
     h1, h2{
         font-weight: bold;
@@ -30,7 +30,7 @@
     button {
         border-radius: 20px;
         border-style: none;
-        background-color: #ECCC69;
+        background-color: var(--yellow);
         color: #43391D;
         font-size: 17px;
         font-weight: bold;
@@ -55,6 +55,7 @@
     
 
     form {
+        background-color: #E8E8EA;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -86,7 +87,7 @@
 
     .registration-container{
         
-        &.sign-up-container{
+        .sign-up-container{
             position: absolute;
             top: 0;
             height: 100%;
@@ -95,9 +96,16 @@
             width: 50%;
             opacity: 0;
             z-index: 1;
+            
+            &.right-panel-active{
+                transform: translateX(100%);
+                opacity: 1;
+                z-index: 5;
+                animation: show 0.6s;
+            }
         }
 
-        &.sign-in-container{
+        .sign-in-container{
             position: absolute;
             top: 0;
             height: 100%;
@@ -105,6 +113,10 @@
             left: 0;
             width: 50%;
             z-index: 2;
+
+            &.right-panel-active{
+                transform: translateX(100%);
+            }
         }
     }
     //BU NEDİR
@@ -128,14 +140,17 @@
         height: 100%;
         overflow: hidden;
         transition: transform 0.6s ease-in-out;
-        background-color: red;
         z-index: 1000;
+
+        &.right-panel-active{
+            transform: translateX(-100%);
+        }
     }
 
     .overlay{
-        background: #ff416c;
-        background: -webkit-linear-gradient(to right, #ff4b2b, #ff416c);
-        background: linear-gradient(to right, #ff4b2b, #ff416c);
+        background: #BDA298;
+        background: -webkit-linear-gradient(to right, #D0B2A7, #BDA298);
+        background: linear-gradient(to right, #D0B2A7, #BDA298);
         background-repeat: no-repeat;
         background-size: cover;
         background-position: 0 0;
@@ -145,6 +160,10 @@
         width: 200%;
         transform: translateX(0);
         transition: transform 0.6s ease-in-out;
+    
+        &.right-panel-active{
+            transform: translateX(50%);
+        }
     }
 
     .overlay-panel{
@@ -160,23 +179,22 @@
         width: 50%;
         transform: translateX(0);
         transition: transform 0.6s ease-in-out;
-        z-index: 1000;
 
         &.overlay-left{
             transform: translateX(-20%);
+
+            &.right-panel-active{
+                transform: translateX(0);
+            }
         }
 
         &.overlay-right{
             right: 0;
             transform: translateX(0);
+
+            &.right-panel-active{
+                transform: translateX(20%);
+            }
         }
-
-    }
-
-    
-
-
-  
-    
+    }    
 }
-
