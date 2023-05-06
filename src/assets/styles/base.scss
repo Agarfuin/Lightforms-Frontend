@@ -16,6 +16,12 @@ body {
   background-color: #E8E8EA;
 }
 
+img {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+}
+
 .container {
   width: 100%;
   max-width: 1280px;

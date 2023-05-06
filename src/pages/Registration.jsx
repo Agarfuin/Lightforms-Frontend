@@ -1,11 +1,20 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 //Styles
 import "../assets/styles/registration.scss";
-import { Link } from "react-router-dom";
+
+//Assets
+import Background from "../assets/images/wide_logo.jpg";
 
 const Registration = () => {
+  const navigate = useNavigate();
   const [swapPanel, setSwapPanel] = useState(false);
+
+  const handleLogin = () => {
+    localStorage.setItem("isLoggedIn", "true");
+    navigate("/dashboard");
+  };
 
   const signUpButton = () => {
     setSwapPanel(true);
@@ -14,90 +23,107 @@ const Registration = () => {
     setSwapPanel(false);
   };
 
+  useEffect(() => {
+    if (localStorage.getItem("isLoggedIn") === "true") {
+      navigate("/dashboard");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
-    <>
       <main id="registration">
-        <div className="container">
-          <div className="registration-container">
-            <div className={`sign-up-container ${swapPanel ? `right-panel-active` : ``}`}>
-              <form action="#" method="post">
-                <h2>Sign Up</h2>
-                <label for="name">
-                  Name
-                  <input type="text" id="name" placeholder="John" required />
-                </label>
+        <div className="background">
+          <img src={Background} alt="bg" />
+        </div>
+        <div className="registration-container">
+          <div
+            className={`sign-up-container ${
+              swapPanel ? `right-panel-active` : ``
+            }`}
+          >
+            <form onSubmit={handleLogin}>
+              <h2>Sign Up</h2>
+              <div className="form-input">
+                <label for="name">Name</label>
+                <input type="text" id="name" placeholder="John" required />
+              </div>
+              <div className="form-input">
+                <label for="e-mail">E-Mail</label>
+                <input
+                  type="email"
+                  id="e-mail"
+                  placeholder="example@mail.com"
+                  required
+                />
+              </div>
+              <div className="form-input">
+                <label for="password">Password</label>
+                <input type="password" id="password" required />
+              </div>
 
-                <label for="e-mail">
-                  E-Mail
-                  <input
-                    type="email"
-                    id="e-mail"
-                    placeholder="example@mail.com"
-                    required
-                  />
-                </label>
+              <div className="form-input">
+                <label for="confirm-password">Confirm Password</label>
+                <input type="password" id="confirm-password" required />
+              </div>
+              <button type="submit">SIGN UP</button>
+            </form>
+          </div>
 
-                <label for="password">
-                  Password
-                  <input type="password" id="password" required />
-                </label>
+          <div
+            className={`sign-in-container ${
+              swapPanel ? `right-panel-active` : ``
+            }`}
+          >
+            <form onSubmit={handleLogin}>
+              <h2>Sign In</h2>
+              <div className="form-input">
+                <label for="e-mail">E-Mail</label>
+                <input
+                  type="email"
+                  id="e-mail"
+                  placeholder="example@mail.com"
+                  required
+                />
+              </div>
+              <div className="form-input">
+                <label for="password">Password</label>
+                <input type="password" id="password" required />
+              </div>
+              <button type="submit">SIGN IN</button>
+            </form>
+          </div>
 
-                <label for="confirm-password">
-                  Confirm Password
-                  <input type="password" id="confirm-password" required />
-                </label>
+          <div
+            className={`overlay-container ${
+              swapPanel ? `right-panel-active` : ``
+            }`}
+          >
+            <div className={`overlay ${swapPanel ? `right-panel-active` : ``}`}>
+              <div
+                className={`overlay-panel overlay-left ${
+                  swapPanel ? `right-panel-active` : ``
+                }`}
+              >
+                <h1>Already have an account?</h1>
+                <button className="ghost" id="signIn" onClick={signInButton}>
+                  SIGN IN
+                </button>
+              </div>
 
-                <Link to="/dashboard">
-                  <button onClick={signUpButton}>SIGN UP</button>
-                </Link>
-              </form>
-            </div>
-
-            <div className={`sign-in-container ${swapPanel ? `right-panel-active` : ``}`}>
-              <form action="/dashboard">
-                <h2>Sign In</h2>
-                <label for="e-mail">
-                  E-Mail
-                  <input
-                    type="email"
-                    id="e-mail"
-                    placeholder="example@mail.com"
-                    required
-                  />
-                </label>
-
-                <label for="password">
-                  Password
-                  <input type="password" id="password" required />
-                </label>
-
-                <Link to="/dashboard">
-                  <button onClick={signInButton}>SIGN IN</button>
-                </Link>
-              </form>
-            </div>
-
-            <div className={`overlay-container ${swapPanel ? `right-panel-active` : ``}`}>
-              <div className={`overlay ${swapPanel ? `right-panel-active` : ``}`}>
-                <div className={`overlay-panel overlay-left ${swapPanel ? `right-panel-active` : ``}`}>
-                  <h1>Already have an account?</h1>
-                  <button className="ghost" id="signIn" onClick={signInButton}>
-                    SIGN IN
-                  </button>
-                </div>
-
-                <div className={`overlay-panel overlay-right ${swapPanel ? `right-panel-active` : ``}`}>
-                  <h1>Don't have an account?</h1>
-                  <button className="ghost" id="signUp" onClick={signUpButton}>
-                    SIGN UP
-                  </button>
-                </div>
+              <div
+                className={`overlay-panel overlay-right ${
+                  swapPanel ? `right-panel-active` : ``
+                }`}
+              >
+                <h1>Don't have an account?</h1>
+                <button className="ghost" id="signUp" onClick={signUpButton}>
+                  SIGN UP
+                </button>
               </div>
             </div>
           </div>
         </div>
       </main>
-    </>
   );
 };
 

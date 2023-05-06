@@ -10,6 +10,7 @@ import Registration from "./pages/Registration";
 // Styles
 import "./assets/styles/base.scss";
 
+const theme = "light"
 const router = createBrowserRouter([
   {
     path: "/",
@@ -30,4 +31,8 @@ const router = createBrowserRouter([
 ]);
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
-root.render(<RouterProvider router={router} />);
+root.render(
+  <div className={theme}>
+    <RouterProvider router={router} />
+  </div>
+);

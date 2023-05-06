@@ -1,5 +1,9 @@
+import Header from "../components/Header/Header";
+
 const NewForm = () => {
-  return <div></div>;
+  return(
+    <Header isNewForm/>
+  );
 };
 
 export default NewForm;
