@@ -17,7 +17,7 @@ const Home = () => {
       <Header />
       <main id="home">
         <div className="background-img">
-          <img src={bg} alt="" />
+          <img src={bg} alt="bg" />
         </div>
         <div className="home-container container">
           <section className="introduction">
@@ -38,7 +38,7 @@ const Home = () => {
               </div>
               <h4 className="features-title">Easy to use</h4>
               <p className="features-description">
-                hebele hübelehdfggkjg fsjkgshg hfgh
+                Lorem ipsum dolor sit amet consectetur
               </p>
             </div>
 
@@ -48,7 +48,7 @@ const Home = () => {
               </div>
               <h4 className="features-title">Light to carry</h4>
               <p className="features-description">
-                mrb cnm burda bir aciklama yatiyor
+                Lorem ipsum dolor sit amet consectetur
               </p>
             </div>
           </section>
