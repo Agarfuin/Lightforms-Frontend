@@ -51,7 +51,9 @@ export default function Header({ isDashboard, isNewForm }) {
  
   useEffect (
     () => {
-      getUserData()
+      if (localStorage.getItem("isLoggedIn")) {
+        getUserData()
+      }
     }, []
   ) 
 

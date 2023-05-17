@@ -23,7 +23,6 @@
         .newFormButton {
           background-color: var(--yellow);
           height: 70px;
-          width: 250px;
           opacity: 1;
           font-size: 25px;
           color: #332c2b;
@@ -34,6 +33,7 @@
         }
 
         button {
+          width: 100%;
           background-color: rgb(217, 217, 217, 0.15);
           border-radius: 15px;
           height: 50px;
@@ -42,6 +42,10 @@
           color: var(--yellow);
           font-weight: 600;
           cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 8px;
 
           &:hover {
             background-color: rgb(189, 162, 152, 0.1);
@@ -59,9 +63,9 @@
             position: fixed;
             top: 0;
             left: 50%;
-            transform: translateX(-50%);
+            transform: translateX(-38%);
             max-width: 1400px;
-            min-width: 900px;
+            min-width: 1200px;
             opacity: 0.7;
             z-index: -1;
         }

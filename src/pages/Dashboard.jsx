@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 //Components
 import Header from "../components/Header/Header";
@@ -10,30 +10,12 @@ import "../assets/styles/dashboard.scss";
 //Assets
 import Background from "../assets/images/logo_transparent.png";
 
+//Icons
+import {MdPostAdd, MdOutlineSnippetFolder, MdOutlineFolderShared, MdOutlineFolderDelete, MdOutlineDriveFolderUpload} from "react-icons/md"
 
 const Dashboard = () => {
-  /* 
-  const [data, setData] = useState()
 
-  const getData = () => {
-    fetch('https://jsonplaceholder.typicode.com/todos/1')
-      .then(response => response.json())
-      .then(json => {  console.log(json); return setData(json)})
-  }
- 
-  useEffect (
-    () => {
-      getData()
-    }, []
-  ) 
-  */
-
-  /*
-  <span>
-    {data?.title} 
-  </span>
-  */
-
+  const navigate = useNavigate();
   const [currentTab, setCurrentTab] = useState("saved"); // default to saved forms
 
   const [forms, setForms] = useState({
@@ -102,6 +84,17 @@ const Dashboard = () => {
     }
   };
 
+  useEffect(
+    () => {
+      if (localStorage.getItem("isLoggedIn")) {
+        navigate("/dashboard")
+      }else{
+        navigate("/registration")
+      }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []
+  )
+
   return (
     <>
       <Header isDashboard />
@@ -110,7 +103,10 @@ const Dashboard = () => {
           <div className="dashboard-container left">
             <div className="options">
               <Link to="/newForm">
-                <button className="newFormButton">New Form</button>
+                <button className="newFormButton">
+                  <MdPostAdd />
+                  New Form
+                </button>
               </Link>
               <hr />
               <span>My Forms</span>
@@ -118,12 +114,14 @@ const Dashboard = () => {
                 className="savedFormsButton"
                 onClick={() => handleTabClick("saved")}
               >
+                <MdOutlineFolderShared />
                 Saved Forms
               </button>
               <button
                 className="draftsButton"
                 onClick={() => handleTabClick("drafts")}
               >
+                <MdOutlineSnippetFolder />
                 Drafts
               </button>
               <hr />
@@ -131,12 +129,14 @@ const Dashboard = () => {
                 className="sharedFormsButton"
                 onClick={() => handleTabClick("shared")}
               >
+                <MdOutlineDriveFolderUpload />
                 Shared Forms
               </button>
               <button
                 className="deletedFormsButton"
                 onClick={() => handleTabClick("deleted")}
               >
+                <MdOutlineFolderDelete />
                 Deleted Forms
               </button>
             </div>
