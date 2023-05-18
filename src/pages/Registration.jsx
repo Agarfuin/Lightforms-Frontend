@@ -8,9 +8,11 @@ import "../assets/styles/registration.scss";
 import Background from "../assets/images/wide_logo.jpg";
 
 const Registration = () => {
+
   const navigate = useNavigate();
   const [swapPanel, setSwapPanel] = useState(false);
-  const baseURL = "http://lightweight-final-env.eba-ernvgd6q.eu-west-1.elasticbeanstalk.com/api/auth/";
+  const baseURL =
+    "http://lightweight-final-env.eba-ernvgd6q.eu-west-1.elasticbeanstalk.com/api/auth/";
 
   const [registrationData, setRegistrationData] = useState({
     name: "",
@@ -30,14 +32,27 @@ const Registration = () => {
 
       fetch(`${baseURL}signup`, {
         method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify(tempData),
       })
         .then((response) => response.json())
         .then((data) => {
           console.log(data);
-          /* if (data.success) {
-            navigate("/dashboard")
-          } */
+          if (data.token) {
+            localStorage.setItem("isLoggedIn", data.token)
+            navigate("/dashboard");
+          } else {
+            alert(
+              data.error ||
+                "An error occurred during sign up. Please try again."
+            );
+          }
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+          alert("An error occurred. Please try again later.");
         });
     } else {
       alert("Passwords do not match");
@@ -52,14 +67,26 @@ const Registration = () => {
     };
     fetch(`${baseURL}login`, {
       method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify(tempData),
     })
       .then((response) => response.json())
       .then((data) => {
         console.log(data);
-        /* if (data.success) {
-            navigate("/dashboard")
-          } */
+        if (data.token) {
+          localStorage.setItem("isLoggedIn", data.token)
+          navigate("/dashboard");
+        } else {
+          alert(
+            data.error || "An error occurred during sign in. Please try again."
+          );
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        alert("An error occurred. Please try again later.");
       });
   };
 
