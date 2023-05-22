@@ -35,13 +35,8 @@ export default function Header({ isDashboard, isNewForm }) {
     }
   };
  
-
   const getUserData = () => {
-    // fetch('https://jsonplaceholder.typicode.com/todos/1')
-    //   .then(response => response.json())
-    //   .then(json => {  return setUserData(json)})
 
- 
     const fakeUserData = {
       name:"Şimal",
     }

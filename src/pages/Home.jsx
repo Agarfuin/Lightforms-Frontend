@@ -2,14 +2,13 @@
 import Footer from "../components/Footer/Footer";
 import Header from "../components/Header/Header";
 
-import bg from "../assets/images/logo_transparent.png";
-
 // Styles
 import "../assets/styles/home.scss";
 
 //Images
-import Keyboard from "../assets/images/keyboard.png";
-import Feather from "../assets/images/feather.png";
+import Keyboard from "../assets/images/keyboardIcon.png";
+import Feather from "../assets/images/featherIcon.png";
+import bg from "../assets/images/logo_transparent.png";
 
 const Home = () => {
   return (
@@ -27,13 +26,13 @@ const Home = () => {
             <p className="introduction-text">
               Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur
               rutrum nec leo in rutrum. In aliquet diam quis nulla tincidunt,
-              non tempus tortor efficitur. In hac habitasse platea dictumst.{" "}
+              non tempus tortor efficitur. In hac habitasse platea dictumst. Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquam assumenda doloremque impedit tempore?
             </p>
           </section>
 
-          <section className="features">
-            <div className="features-one">
-              <div className="features-one-img">
+          <section className="features-container">
+            <div className="features">
+              <div className="features-img">
                 <img src={Keyboard} alt="" />
               </div>
               <h4 className="features-title">Easy to use</h4>
@@ -42,8 +41,8 @@ const Home = () => {
               </p>
             </div>
 
-            <div className="features-two">
-              <div className="features-two-img">
+            <div className="features">
+              <div className="features-img">
                 <img src={Feather} alt="" />
               </div>
               <h4 className="features-title">Light to carry</h4>
@@ -59,23 +58,26 @@ const Home = () => {
             </div>
 
             <div className="feedback">
-              <label for="feedback-name">
-                Name
-                <input type="text" name="feedback-name" id="feedback-name" />
-              </label>
+              <div className="feedback personalInfo">
+                <label htmlFor="feedback-name">
+                  Name
+                  <input type="text" name="feedback-name" id="feedback-name" />
+                </label>
 
-              <label for="feedback-email">
-                Email
-                <input type="email" name="feedback-email" id="feedback-email" />
-              </label>
-
+                <label htmlFor="feedback-email">
+                  Email
+                  <input
+                    type="email"
+                    name="feedback-email"
+                    id="feedback-email"
+                  />
+                </label>
+              </div>
               <textarea
-                id="feedback-message"
-                rows="8"
-                cols="40"
+                className="feedback message"
                 placeholder="Type message here..."
               ></textarea>
-              <button type="submit" id="feedback-submit">
+              <button type="submit">
                 Submit
               </button>
             </div>
