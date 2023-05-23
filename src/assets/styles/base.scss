@@ -32,3 +32,14 @@ img {
 a{
   text-decoration: none;
 }
+
+.formInput{
+  display: flex;
+  flex-direction: column;
+  gap: 4px;  
+
+  label{
+    position: relative;
+    left: 5px;
+  }
+}

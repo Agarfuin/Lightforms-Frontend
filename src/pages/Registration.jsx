@@ -7,8 +7,10 @@ import "../assets/styles/registration.scss";
 //Assets
 import Background from "../assets/images/wide_logo.jpg";
 
-const Registration = () => {
+//Components
+import FormInput from "../components/FormInput";
 
+const Registration = () => {
   const navigate = useNavigate();
   const [swapPanel, setSwapPanel] = useState(false);
   const baseURL =
@@ -20,6 +22,14 @@ const Registration = () => {
     password: "",
     confirmPassword: "",
   });
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setRegistrationData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
 
   const handleSignUp = (e) => {
     e.preventDefault();
@@ -41,7 +51,7 @@ const Registration = () => {
         .then((data) => {
           console.log(data);
           if (data.token) {
-            localStorage.setItem("isLoggedIn", data.token)
+            localStorage.setItem("isLoggedIn", data.token);
             navigate("/dashboard");
           } else {
             alert(
@@ -76,7 +86,7 @@ const Registration = () => {
       .then((data) => {
         console.log(data);
         if (data.token) {
-          localStorage.setItem("isLoggedIn", data.token)
+          localStorage.setItem("isLoggedIn", data.token);
           navigate("/dashboard");
         } else {
           alert(
@@ -119,65 +129,39 @@ const Registration = () => {
         >
           <form onSubmit={handleSignUp}>
             <h2>Sign Up</h2>
-            <div className="form-input">
-              <label htmlFor="name">Name</label>
-              <input
-                type="text"
-                id="name"
-                placeholder="John"
-                onChange={(e) => {
-                  setRegistrationData({
-                    ...registrationData,
-                    name: e.target.value,
-                  });
-                }}
-                required
-              />
-            </div>
-            <div className="form-input">
-              <label htmlFor="signUp-email">E-Mail</label>
-              <input
-                type="email"
-                id="signUp-email"
-                placeholder="example@mail.com"
-                onChange={(e) => {
-                  setRegistrationData({
-                    ...registrationData,
-                    email: e.target.value,
-                  });
-                }}
-                required
-              />
-            </div>
-            <div className="form-input">
-              <label htmlFor="signUp-password">Password</label>
-              <input
-                type="password"
-                id="signUp-password"
-                onChange={(e) => {
-                  setRegistrationData({
-                    ...registrationData,
-                    password: e.target.value,
-                  });
-                }}
-                required
-              />
-            </div>
+            <FormInput
+              label="Name"
+              inputType="text"
+              name="name"
+              placeholder="John"
+              onChange={handleInputChange}
+              required
+            />
 
-            <div className="form-input">
-              <label htmlFor="confirm-password">Confirm Password</label>
-              <input
-                type="password"
-                id="confirm-password"
-                onChange={(e) => {
-                  setRegistrationData({
-                    ...registrationData,
-                    confirmPassword: e.target.value,
-                  });
-                }}
-                required
-              />
-            </div>
+            <FormInput
+              label="E-Mail"
+              inputType="email"
+              name="email"
+              placeholder="example@mail.com"
+              onChange={handleInputChange}
+              required
+            />
+
+            <FormInput
+              label="Password"
+              inputType="password"
+              name="password"
+              onChange={handleInputChange}
+              required
+            />
+
+            <FormInput
+              label="Confirm Password"
+              inputType="password"
+              name="confirmPassword"
+              onChange={handleInputChange}
+              required
+            />
             <button type="submit">SIGN UP</button>
           </form>
         </div>
@@ -189,35 +173,24 @@ const Registration = () => {
         >
           <form onSubmit={handleSignIn}>
             <h2>Sign In</h2>
-            <div className="form-input">
-              <label htmlFor="signIn-email">E-Mail</label>
-              <input
-                type="email"
-                id="signIn-email"
-                placeholder="example@mail.com"
-                onChange={(e) => {
-                  setRegistrationData({
-                    ...registrationData,
-                    email: e.target.value,
-                  });
-                }}
-                required
-              />
-            </div>
-            <div className="form-input">
-              <label htmlFor="signIn-password">Password</label>
-              <input
-                type="password"
-                id="signIn-password"
-                onChange={(e) => {
-                  setRegistrationData({
-                    ...registrationData,
-                    password: e.target.value,
-                  });
-                }}
-                required
-              />
-            </div>
+            <FormInput
+              label="E-Mail"
+              inputType="email"
+              name="email"
+              id="signIn-email"
+              placeholder="example@mail.com"
+              onChange={handleInputChange}
+              required
+            />
+
+            <FormInput
+              label="Password"
+              inputType="password"
+              name="password"
+              id="signIn-password"
+              onChange={handleInputChange}
+              required
+            />
             <button type="submit">SIGN IN</button>
           </form>
         </div>

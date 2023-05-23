@@ -9,6 +9,7 @@ import "../assets/styles/home.scss";
 import Keyboard from "../assets/images/keyboardIcon.png";
 import Feather from "../assets/images/featherIcon.png";
 import bg from "../assets/images/logo_transparent.png";
+import FormInput from "../components/FormInput";
 
 const Home = () => {
   return (
@@ -26,7 +27,9 @@ const Home = () => {
             <p className="introduction-text">
               Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur
               rutrum nec leo in rutrum. In aliquet diam quis nulla tincidunt,
-              non tempus tortor efficitur. In hac habitasse platea dictumst. Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquam assumenda doloremque impedit tempore?
+              non tempus tortor efficitur. In hac habitasse platea dictumst.
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquam
+              assumenda doloremque impedit tempore?
             </p>
           </section>
 
@@ -58,28 +61,26 @@ const Home = () => {
             </div>
 
             <div className="feedback">
-              <div className="feedback personalInfo">
-                <label htmlFor="feedback-name">
-                  Name
-                  <input type="text" name="feedback-name" id="feedback-name" />
-                </label>
-
-                <label htmlFor="feedback-email">
-                  Email
-                  <input
-                    type="email"
-                    name="feedback-email"
-                    id="feedback-email"
-                  />
-                </label>
+              <div className="personalInfo">
+                <FormInput
+                  label={"Name"}
+                  name={"feedback-name"}
+                  inputType={"text"}
+                />
+                <FormInput
+                  label={"E-mail"}
+                  name={"feedback-email"}
+                  inputType={"email"}
+                />
               </div>
+
               <textarea
                 className="feedback message"
                 placeholder="Type message here..."
               ></textarea>
-              <button type="submit">
-                Submit
-              </button>
+              <div className="feedback-button">
+                <button type="submit">Submit</button>
+              </div>
             </div>
           </section>
         </div>
