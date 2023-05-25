@@ -5,15 +5,19 @@ import { useEffect, useState } from "react";
 import Logo from "../../assets/images/logo_w_text.png";
 import "../../assets/styles/header.scss";
 
-export default function Header({ isDashboard, isNewForm }) {
+//Components
+import capitalize from "../Utils/Capitalize"
 
+export default function Header({ isDashboard, isNewForm }) {
   const navigate = useNavigate();
+  const localStorageTokenKey = "token";
+  const baseURL = "https://api.lightforms.co/api/services";
 
   const [open, setOpen] = useState(false);
-  const [userData, setUserData] = useState({})
+  const [userData, setUserData] = useState({});
 
   const handleStartCreating = () => {
-    if (localStorage.getItem("isLoggedIn")) {
+    if (localStorage.getItem(localStorageTokenKey)) {
       navigate("/dashboard");
     } else {
       navigate("/registration");
@@ -21,7 +25,7 @@ export default function Header({ isDashboard, isNewForm }) {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("isLoggedIn");
+    localStorage.removeItem(localStorageTokenKey);
     navigate("/");
   };
 
@@ -34,23 +38,36 @@ export default function Header({ isDashboard, isNewForm }) {
       setOpen(false);
     }
   };
- 
+
   const getUserData = () => {
-
-    const fakeUserData = {
-      name:"Şimal",
+    if (localStorage.getItem(localStorageTokenKey)) {
+      const token = localStorage.getItem(localStorageTokenKey);
+      const api = `${baseURL}/users/profile`;
+      const headers = {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      };
+      fetch(api, {
+        method: "GET",
+        headers: headers,
+      })
+        .then((response) => {
+          if (response.status === 200) {
+            return response.json();
+          }
+          throw new Error("Something went wrong");
+        })
+        .then((data) => {
+          setUserData(data.name);
+        });
     }
+  };
 
-    setUserData(fakeUserData)
-  }
- 
-  useEffect (
-    () => {
-      if (localStorage.getItem("isLoggedIn")) {
-        getUserData()
-      }
-    }, []
-  ) 
+  useEffect(() => {
+    if (localStorage.getItem(localStorageTokenKey)) {
+      getUserData();
+    }
+  }, []);
 
   return (
     <div id="header" className={isDashboard || isNewForm ? "dashboard" : ""}>
@@ -71,12 +88,12 @@ export default function Header({ isDashboard, isNewForm }) {
           ) : (
             <div className="profileMenu">
               <button className="profileButton" onClick={openDropdown}>
-              {userData?.name?.toString()[0]}
+                {capitalize(userData?.toString()[0])}
               </button>
               {open ? (
                 <div className="dropdown-container" id="dropdownMenu">
                   <div className="dropdown">
-                    <span>Hello {userData?.name}!</span>
+                    <span>Hello {capitalize(userData)}!</span>
                     <button className="signoutButton" onClick={handleLogout}>
                       Sign Out
                     </button>

@@ -15,6 +15,7 @@ import {MdPostAdd, MdOutlineSnippetFolder, MdOutlineFolderShared, MdOutlineFolde
 
 const Dashboard = () => {
 
+  const localStorageTokenKey = "token";
   const navigate = useNavigate();
   const [currentTab, setCurrentTab] = useState("saved"); // default to saved forms
 
@@ -86,7 +87,7 @@ const Dashboard = () => {
 
   useEffect(
     () => {
-      if (localStorage.getItem("isLoggedIn")) {
+      if (localStorage.getItem(localStorageTokenKey)) {
         navigate("/dashboard")
       }else{
         navigate("/registration")

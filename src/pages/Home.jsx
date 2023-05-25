@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 //Components
 import Footer from "../components/Footer/Footer";
 import Header from "../components/Header/Header";
@@ -9,9 +11,47 @@ import "../assets/styles/home.scss";
 import Keyboard from "../assets/images/keyboardIcon.png";
 import Feather from "../assets/images/featherIcon.png";
 import bg from "../assets/images/logo_transparent.png";
-import FormInput from "../components/FormInput";
+
+//Components
+import FormInput from "../components/Utils/FormInput";
 
 const Home = () => {
+
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [message, setMessage] = useState('');
+
+  const handleFeedback = async (e) => {
+    e.preventDefault();
+
+    const data = {
+      name,
+      email,
+      message
+    };
+
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      });
+
+      if (response.ok) {
+        alert('Form submitted successfully!');
+        setName('');
+        setEmail('');
+        setMessage('');
+      } else {
+        alert('Form submission failed!');
+      }
+    } catch (error) {
+      console.error('Error submitting form:', error);
+    }
+  }
+
   return (
     <>
       <Header />
@@ -66,20 +106,26 @@ const Home = () => {
                   label={"Name"}
                   name={"feedback-name"}
                   inputType={"text"}
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
                 />
                 <FormInput
                   label={"E-mail"}
                   name={"feedback-email"}
                   inputType={"email"}
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
 
               <textarea
                 className="feedback message"
                 placeholder="Type message here..."
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
               ></textarea>
               <div className="feedback-button">
-                <button type="submit">Submit</button>
+                <button type="submit" onClick={handleFeedback}>Submit</button>
               </div>
             </div>
           </section>

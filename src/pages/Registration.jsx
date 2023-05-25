@@ -8,13 +8,14 @@ import "../assets/styles/registration.scss";
 import Background from "../assets/images/wide_logo.jpg";
 
 //Components
-import FormInput from "../components/FormInput";
+import FormInput from "../components/Utils/FormInput";
 
 const Registration = () => {
   const navigate = useNavigate();
   const [swapPanel, setSwapPanel] = useState(false);
+  const localStorageTokenKey = "token";
   const baseURL =
-    "http://lightweight-final-env.eba-ernvgd6q.eu-west-1.elasticbeanstalk.com/api/auth/";
+    "https://api.lightforms.co/api/auth/";
 
   const [registrationData, setRegistrationData] = useState({
     name: "",
@@ -51,7 +52,7 @@ const Registration = () => {
         .then((data) => {
           console.log(data);
           if (data.token) {
-            localStorage.setItem("isLoggedIn", data.token);
+            localStorage.setItem(localStorageTokenKey, data.token);
             navigate("/dashboard");
           } else {
             alert(
@@ -86,7 +87,7 @@ const Registration = () => {
       .then((data) => {
         console.log(data);
         if (data.token) {
-          localStorage.setItem("isLoggedIn", data.token);
+          localStorage.setItem(localStorageTokenKey, data.token);
           navigate("/dashboard");
         } else {
           alert(
@@ -108,7 +109,7 @@ const Registration = () => {
   };
 
   useEffect(() => {
-    if (localStorage.getItem("isLoggedIn")) {
+    if (localStorage.getItem(localStorageTokenKey)) {
       navigate("/dashboard");
     } else {
       navigate("/registration");
