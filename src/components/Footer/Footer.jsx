@@ -5,7 +5,7 @@ const Footer = () => {
     <footer className="footer">
       <address>
         <a href="https://miro.com/app/board/uXjVPyOX3b8=/">
-          Lightweight Forms Design
+          Light Forms Design
         </a>
         <br />
         San Francisco

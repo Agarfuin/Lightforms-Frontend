@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -9,145 +10,148 @@ import "../assets/styles/dashboard.scss";
 
 //Assets
 import Background from "../assets/images/logo_transparent.png";
+import FormIcon from "../assets/images/formIcon.png";
 
 //Icons
-import {MdPostAdd, MdOutlineSnippetFolder, MdOutlineFolderShared, MdOutlineFolderDelete, MdOutlineDriveFolderUpload} from "react-icons/md"
+import {
+  MdPostAdd,
+  MdOutlineSnippetFolder,
+  MdOutlineFolderDelete,
+  MdOutlineDriveFolderUpload,
+} from "react-icons/md";
+
+const baseURL = "https://api.lightforms.co/api/services";
 
 const Dashboard = () => {
-
   const localStorageTokenKey = "token";
   const navigate = useNavigate();
-  const [currentTab, setCurrentTab] = useState("saved"); // default to saved forms
-
+  const [currentTab, setCurrentTab] = useState("draft"); // default to draft forms
+  const [pageTitle, setPageTitle] = useState("Drafts"); // default to draft forms
+  
   const [forms, setForms] = useState({
-    saved: [
+    draft: [
       { id: 1, name: 'Form 1' },
       { id: 2, name: 'Form 2' },
-      { id: 3, name: 'Form 3' }
-    ], // array of saved forms
-    drafts: [
-      { id: 4, name: 'Draft 1' },
-      { id: 5, name: 'Draft 2' }
+      { id: 3, name: 'Form 3' },
+      { id: 4, name: 'Form 4' },
+      { id: 5, name: 'Form 5' },
+      { id: 6, name: 'Form 6' }
     ], // array of draft forms
-    shared: [
-      { id: 6, name: 'Shared Form 1' },
-      { id: 7, name: 'Shared Form 2' },
-      { id: 8, name: 'Shared Form 3' },
-      { id: 9, name: 'Shared Form 4' }
-    ], // array of shared forms
     deleted: [
-      { id: 10, name: 'Deleted 1' },
-      { id: 11, name: 'Deleted 2' },
-      { id: 12, name: 'Deleted 3' }
+      { id: 7, name: 'Form 1' },
+      { id: 8, name: 'Form 2' },
     ], // array of deleted forms
+    published: [], // array of published forms
   });
 
-  const handleTabClick = (tab) => {
+  const handleTabClick = (tab, pageTitle) => {
     setCurrentTab(tab);
+    setPageTitle(pageTitle);
   };
 
   const renderForms = () => {
-    switch (currentTab) {
-      case "saved":
-        return (
-          <ul>
-            {forms.saved.map((form) => (
-              <li key={form.id}>{form.name}</li>
-            ))}
-          </ul>
-        );
-      case "drafts":
-        return (
-          <ul>
-            {forms.drafts.map((form) => (
-              <li key={form.id}>{form.name}</li>
-            ))}
-          </ul>
-        );
-      case "shared":
-        return (
-          <ul>
-            {forms.shared.map((form) => (
-              <li key={form.id}>{form.name}</li>
-            ))}
-          </ul>
-        );
-      case "deleted":
-        return (
-          <ul>
-            {forms.deleted.map((form) => (
-              <li key={form.id}>{form.name}</li>
-            ))}
-          </ul>
-        );
-      default:
-        return null;
-    }
+    return (
+      <ul className="form-list">
+        {forms[currentTab].map((form) => (
+          <li
+            key={form.id}
+            className="form-list__item"
+          >
+            <div className="form-list__item-img">
+              <img
+                src={FormIcon}
+                alt="form icon"
+              />
+            </div>
+            <span className="form-list__item-name">{form.name}</span>
+          </li>
+        ))}
+      </ul>
+    );
   };
 
-  useEffect(
-    () => {
-      if (localStorage.getItem(localStorageTokenKey)) {
-        navigate("/dashboard")
-      }else{
-        navigate("/registration")
-      }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []
-  )
+  useEffect(() => {
+    if (localStorage.getItem(localStorageTokenKey)) {
+      navigate("/dashboard");
+    } else {
+      navigate("/registration");
+    }
+  }, []);
+
+  useEffect(() => {
+    const api = `${baseURL}/users/forms/${currentTab}`; // Replace this with the actual API endpoint for fetching forms
+    const headers = {
+      "Content-Type": "application/json",
+    };
+
+    fetch(api, {
+      method: "GET",
+      headers: headers,
+    })
+      .then((response) => {
+        if (response.status === 200) {
+          return response.json();
+        }
+        throw new Error("Something went wrong");
+      })
+      .then((data) => {
+        setForms({ ...forms, currentTab: data });
+      });
+      
+  }, [currentTab]);
 
   return (
     <>
       <Header isDashboard />
       <main id="dashboard">
-        <div className="dashboard-container">
-          <div className="dashboard-container left">
-            <div className="options">
-              <Link to="/newForm">
-                <button className="newFormButton">
-                  <MdPostAdd />
-                  New Form
-                </button>
-              </Link>
-              <hr />
-              <span>My Forms</span>
-              <button
-                className="savedFormsButton"
-                onClick={() => handleTabClick("saved")}
-              >
-                <MdOutlineFolderShared />
-                Saved Forms
+        <div
+          id="dashboard__left"
+          className="sidebar"
+        >
+          <div className="options">
+            <Link to="/newForm">
+              <button className="newFormButton">
+                <MdPostAdd />
+                New Form
               </button>
-              <button
-                className="draftsButton"
-                onClick={() => handleTabClick("drafts")}
-              >
-                <MdOutlineSnippetFolder />
-                Drafts
-              </button>
-              <hr />
-              <button
-                className="sharedFormsButton"
-                onClick={() => handleTabClick("shared")}
-              >
-                <MdOutlineDriveFolderUpload />
-                Shared Forms
-              </button>
-              <button
-                className="deletedFormsButton"
-                onClick={() => handleTabClick("deleted")}
-              >
-                <MdOutlineFolderDelete />
-                Deleted Forms
-              </button>
-            </div>
+            </Link>
+            <hr />
+            <span>My Forms</span>
+            <button
+              className="draftsButton"
+              onClick={() => handleTabClick("draft", "Drafts")}
+            >
+              <MdOutlineSnippetFolder />
+              Drafts
+            </button>
+            <button
+              className="deletedFormsButton"
+              onClick={() => handleTabClick("deleted", "Deleted Forms")}
+            >
+              <MdOutlineFolderDelete />
+              Deleted Forms
+            </button>
+            <button
+              className="publishedFormsButton"
+              onClick={() => handleTabClick("published", "Published Forms")}
+            >
+              <MdOutlineDriveFolderUpload />
+              Published Forms
+            </button>
           </div>
-          <div className="dashboard-container right">
-            <div className="background">
-              <img src={Background} alt="bg" />
-            </div>
-            {renderForms()}
+        </div>
+        <div
+          id="dashboard__right"
+          className="page-content"
+        >
+          <div className="background">
+            <img
+              src={Background}
+              alt="bg"
+            />
           </div>
+          <h1 className="tabTitle">{pageTitle}</h1>
+          {renderForms()}
         </div>
       </main>
     </>

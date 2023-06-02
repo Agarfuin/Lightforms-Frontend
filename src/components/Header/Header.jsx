@@ -2,7 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 
 //Assets
-import Logo from "../../assets/images/logo_w_text.png";
+import Logo from "../../assets/images/logo.png";
 import "../../assets/styles/header.scss";
 
 //Components
@@ -78,7 +78,7 @@ export default function Header({ isDashboard, isNewForm }) {
               <img src={Logo} alt="logo" />
             </div>
           </Link>
-          <span className="logoTitle">Lightweight Forms</span>
+          <span className="logoTitle">Light Forms</span>
         </div>
         <div className="right">
           {!isDashboard && !isNewForm ? (
