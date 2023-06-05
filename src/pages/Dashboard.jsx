@@ -2,15 +2,17 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
+// Store
+import { useDispatch } from "react-redux";
+import { decrement } from "../store/features/userSlice";
+
 //Components
 import Header from "../components/Header/Header";
-
-//Styles
-import "../assets/styles/dashboard.scss";
 
 //Assets
 import Background from "../assets/images/logo_transparent.png";
 import FormIcon from "../assets/images/formIcon.png";
+import "../assets/styles/dashboard.scss";
 
 //Icons
 import {
@@ -25,21 +27,23 @@ const baseURL = "https://api.lightforms.co/api/services";
 const Dashboard = () => {
   const localStorageTokenKey = "token";
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   const [currentTab, setCurrentTab] = useState("draft"); // default to draft forms
   const [pageTitle, setPageTitle] = useState("Drafts"); // default to draft forms
-  
+
   const [forms, setForms] = useState({
     draft: [
-      { id: 1, name: 'Form 1' },
-      { id: 2, name: 'Form 2' },
-      { id: 3, name: 'Form 3' },
-      { id: 4, name: 'Form 4' },
-      { id: 5, name: 'Form 5' },
-      { id: 6, name: 'Form 6' }
+      { id: 1, name: "Form 1" },
+      { id: 2, name: "Form 2" },
+      { id: 3, name: "Form 3" },
+      { id: 4, name: "Form 4" },
+      { id: 5, name: "Form 5" },
+      { id: 6, name: "Form 6" },
     ], // array of draft forms
     deleted: [
-      { id: 7, name: 'Form 1' },
-      { id: 8, name: 'Form 2' },
+      { id: 7, name: "Form 1" },
+      { id: 8, name: "Form 2" },
     ], // array of deleted forms
     published: [], // array of published forms
   });
@@ -97,7 +101,6 @@ const Dashboard = () => {
       .then((data) => {
         setForms({ ...forms, currentTab: data });
       });
-      
   }, [currentTab]);
 
   return (
@@ -140,8 +143,7 @@ const Dashboard = () => {
             </button>
           </div>
         </div>
-        <div
-          id="dashboard__right"
+        <div id="dashboard__right"
           className="page-content"
         >
           <div className="background">

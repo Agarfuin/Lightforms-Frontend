@@ -8,11 +8,11 @@ const Footer = () => {
           Light Forms Design
         </a>
         <br />
-        San Francisco
+        Istinye University
         <br />
-        California
+        Istanbul
         <br />
-        USA
+        Turkey
       </address>
     </footer>
   );

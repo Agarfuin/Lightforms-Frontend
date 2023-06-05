@@ -16,10 +16,9 @@ import bg from "../assets/images/logo_transparent.png";
 import FormInput from "../components/Utils/FormInput";
 
 const Home = () => {
-
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [message, setMessage] = useState('');
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [message, setMessage] = useState("");
 
   const handleFeedback = async (e) => {
     e.preventDefault();
@@ -27,70 +26,80 @@ const Home = () => {
     const data = {
       name,
       email,
-      message
+      message,
     };
 
     try {
-      const response = await fetch('/api/contact', {
-        method: 'POST',
+      const response = await fetch("/api/contact", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json'
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify(data)
+        body: JSON.stringify(data),
       });
 
       if (response.ok) {
-        alert('Form submitted successfully!');
-        setName('');
-        setEmail('');
-        setMessage('');
+        alert("Form submitted successfully!");
+        setName("");
+        setEmail("");
+        setMessage("");
       } else {
-        alert('Form submission failed!');
+        alert("Form submission failed!");
       }
     } catch (error) {
-      console.error('Error submitting form:', error);
+      console.error("Error submitting form:", error);
     }
-  }
+  };
 
   return (
     <>
       <Header />
       <main id="home">
         <div className="background-img">
-          <img src={bg} alt="bg" />
+          <img
+            src={bg}
+            alt="bg"
+          />
         </div>
         <div className="home-container container">
           <section className="introduction">
             <h1 className="introduction-slogan">
-              Lorem Ipsum Dolor Sit Amet Consectetur Adipiscing Elit
+              Light Forms <br/>
+              <i>Simplify Surveys, Illuminate Insights</i>
             </h1>
             <p className="introduction-text">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur
-              rutrum nec leo in rutrum. In aliquet diam quis nulla tincidunt,
-              non tempus tortor efficitur. In hac habitasse platea dictumst.
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquam
-              assumenda doloremque impedit tempore?
+              Light Forms was desgined to create a simple and effective
+              alternative to Google Forms that is easy for anyone to use. We
+              believe that by focusing on the core features and keeping the user
+              experience front and center, we can create a valuable tool that
+              will be useful to many people.
             </p>
           </section>
 
           <section className="features-container">
             <div className="features">
               <div className="features-img">
-                <img src={Keyboard} alt="" />
+                <img
+                  src={Keyboard}
+                  alt=""
+                />
               </div>
-              <h4 className="features-title">Easy to use</h4>
+              <h4 className="features-title">Easy to Use</h4>
               <p className="features-description">
-                Lorem ipsum dolor sit amet consectetur
+                <i>Survey Simplicity, Light Forms' Specialty</i>
               </p>
             </div>
 
             <div className="features">
               <div className="features-img">
-                <img src={Feather} alt="" />
+                <img
+                  src={Feather}
+                  alt=""
+                />
               </div>
-              <h4 className="features-title">Light to carry</h4>
+              <h4 className="features-title">Light to Carry</h4>
               <p className="features-description">
-                Lorem ipsum dolor sit amet consectetur
+                <i>Light as a Feather, Surveys Go Wherever</i>
               </p>
             </div>
           </section>
@@ -125,7 +134,12 @@ const Home = () => {
                 onChange={(e) => setMessage(e.target.value)}
               ></textarea>
               <div className="feedback-button">
-                <button type="submit" onClick={handleFeedback}>Submit</button>
+                <button
+                  type="submit"
+                  onClick={handleFeedback}
+                >
+                  Submit
+                </button>
               </div>
             </div>
           </section>
