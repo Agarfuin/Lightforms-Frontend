@@ -1,118 +1,138 @@
 #dashboard {
   width: 100%;
   display: flex;
-    &__left {
-      background-color: #312d2a;
-      height: 100vh;
-      padding: 50px 20px;
+  &__left {
+    background-color: #312d2a;
+    height: 100vh;
+    padding: 50px 20px;
+    position: fixed;
 
-      // Sidebar yok ediliyor
-      @media (max-width: 800px) {
-        display: none;
+    // Sidebar yok ediliyor
+    @media (max-width: 800px) {
+      display: none;
+    }
+
+    .options {
+      gap: 30px;
+      display: flex;
+      flex-direction: column;
+      align-items: left;
+
+      span {
+        font-size: 23px;
+        color: #bda298;
+        font-weight: bold;
       }
 
-      .options {
-        gap: 30px;
+      .newFormButton {
+        background-color: var(--yellow);
+        height: 70px;
+        opacity: 1;
+        font-size: 25px;
+        color: #332c2b;
+        display: flex;
+        justify-content: center;
+
+        &:hover {
+          background-color: #ecd769;
+        }
+      }
+
+      button {
+        width: 240px;
+        background-color: rgb(217, 217, 217, 0.15);
+        border-radius: 15px;
+        height: 50px;
+        font-size: 20px;
+        border-style: none;
+        color: var(--yellow);
+        font-weight: 600;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 5px;
+        padding: 20px;
+        transition: all 0.2s ease;
+        &:hover {
+          background-color: rgb(189, 162, 152, 0.1);
+        }
+      }
+    }
+  }
+
+  &__right {
+    width: 100%;
+
+    @media (min-width: 801px) {
+      width: calc(100% - 280px);
+      margin-left: 280px;
+    }
+
+    .background {
+      position: fixed;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      max-width: 1400px;
+      min-width: 1200px;
+      opacity: 0.7;
+      z-index: -1;
+
+      @media (min-width: 801px) {
+        transform: translateX(-38%);
+      }
+    }
+
+    .tabTitle {
+      display: flex;
+      justify-content: center;
+      color: var(--text-color);
+      font-size: 35px;
+      padding: 35px 50px;
+      text-decoration: underline;
+      text-underline-offset: 5px;
+    }
+
+    .form-list {
+      margin: 60px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, 120px);
+      gap: 60px;
+      text-align: center;
+
+      @media (max-width: 800px) {
+        row-gap: 30px;
+        justify-content: center;
+      }
+
+      &__item {
         display: flex;
         flex-direction: column;
-        align-items: left;
+        align-items: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        &:hover {
+          transform: scale(1.1);
 
-        span {
-          font-size: 23px;
-          color: #bda298;
-          font-weight: bold;
         }
-
-        .newFormButton {
-          background-color: var(--yellow);
-          height: 70px;
-          opacity: 1;
-          font-size: 25px;
-          color: #332c2b;
-          display: flex;
-          justify-content: center;
-
-          &:hover {
-            background-color: #ecd769;
-          }
-        }
-
-        button {
-          width: 240px;
-          background-color: rgb(217, 217, 217, 0.15);
-          border-radius: 15px;
-          height: 50px;
+        &-name {
           font-size: 20px;
-          border-style: none;
-          color: var(--yellow);
-          font-weight: 600;
-          cursor: pointer;
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          margin-top: 5px;
-          padding: 20px;
 
-          &:hover {
-            background-color: rgb(189, 162, 152, 0.1);
+          @media (max-width: 800px) {
+            font-size: 14px;
+          }
+        }
+        &-img {
+          width: 120px;
+          height: 120px;
+
+          @media (max-width: 800px) {
+            width: 100px;
+            height: 100px;
           }
         }
       }
     }
-
-    &__right {
-      width: 100%;
-
-      .background {
-        position: fixed;
-        top: 0;
-        left: 50%;
-        transform: translateX(-38%);
-        max-width: 1400px;
-        min-width: 1200px;
-        opacity: 0.7;
-        z-index: -1;
-      }
-
-      .tabTitle{
-        
-      }
-
-      .form-list {
-        margin: 60px;
-        display: grid;
-        grid-template-columns: repeat( auto-fit, 120px );
-        gap: 60px;
-        text-align: center;
-
-        @media (max-width: 800px) {
-          row-gap: 30px;
-          justify-content: center;
-        }
-
-        &__item {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          cursor: pointer;
-
-          &-name {
-            font-size: 20px;
-
-            @media (max-width: 800px) {
-              font-size: 14px;
-            }
-          }
-          &-img {
-            width: 120px;
-            height: 120px;
-
-            @media (max-width: 800px) {
-              width: 100px;
-              height: 100px;
-            }
-          }
-        }
-      }
-    }
+  }
 }

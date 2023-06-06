@@ -14,8 +14,6 @@
     "react-router-dom": "^6.9.0",
     "react-scripts": "5.0.1",
     "sass": "^1.59.3",
-    "survey-creator-react": "^1.9.90",
-    "survey-react-ui": "^1.9.89",
     "web-vitals": "^2.1.4"
   },
   "scripts": {

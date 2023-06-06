@@ -1,6 +1,8 @@
-//Survey.js
-import { Model } from "survey-core";
-import { Survey } from "survey-react-ui";
+/* eslint-disable react-hooks/exhaustive-deps */
+import { useEffect, useState } from "react";
+
+// Store
+import { useSelector } from "react-redux";
 
 //Components
 import Header from "../components/Header/Header";
@@ -8,53 +10,129 @@ import Header from "../components/Header/Header";
 //Assets
 import Background from "../assets/images/logo_transparent.png";
 import "../assets/styles/newForm.scss";
+import { useNavigate } from "react-router-dom";
 
 const NewForm = () => {
-  const survey = new Model();
-  /* const localStorageTokenKey = "token";
-  const baseURL = "https://api.lightforms.co/api/services/forms/"; */
+  // Variables
+  const navigate = useNavigate();
 
-  const newFormPage = survey.addNewPage("NewForm");
+  // Get Form Id
+  const form = useSelector((state) => state.form.form);
 
-  const addFormElement = (type, name, inputType, title, choices, state) => {
-    const element = newFormPage.addNewQuestion(type, name);
-    element.inputType = inputType;
-    element.title = title;
-    element.choices = choices;
-    element.state = state;
-  };
+  const localStorageTokenKey = "token";
+  const baseURL = "https://api.lightforms.co/api/services/forms";
 
-  /*
+  // States
+  const [formElements, setFormElements] = useState([]);
+
   const handlePublish = (e) => {
     e.preventDefault();
-    if (localStorage.getItem(localStorageTokenKey)) {
-      const token = localStorage.getItem(localStorageTokenKey);
-      const api = `${baseURL}`;
+    const token = localStorage.getItem(localStorageTokenKey);
+    if (token) {
+      const api = baseURL;
       const headers = {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       };
       fetch(api, {
-        method: "GET",
+        method: "POST",
         headers: headers,
-      })
-        .then((response) => {
-          if (response.status === 200) {
-            return response.json();
-          }
-          throw new Error("Something went wrong");
-        })
+        body: JSON.stringify(formElements),
+      }).then((response) => {
+        if (response.status === 200) {
+          return response.json();
+        }
+        throw new Error("Something went wrong");
+      });
     }
-  }
- 
-   const saveSurveyResults = () => {
-    alert("Anket sunucuya kaydedildi.");
-    const results = JSON.stringify({});
-    alert(results);
-  }; */
+  };
 
-  survey.showQuestionNumbers = false;
-  survey.showNavigationButtons = false;
+  const getFormContent = async (headers, formId) => {
+    // /api/services/forms/byId/{id}
+    const data = await fetch(`${baseURL}/byId/${formId}`, {
+      method: "GET",
+      headers: headers,
+    }).then(async (response) => {
+      if (response.status === 200) {
+        return response.json();
+      }
+      throw new Error("Something went wrong");
+    });
+
+    setFormElements(data);
+  };
+
+  const addElement = async (type, title) => {
+    // /api/services/forms/{formId}/questions POST
+
+    const token = localStorage.getItem(localStorageTokenKey);
+    if (token) {
+      const api = `${baseURL}/questions`;
+      const headers = {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      };
+      await fetch(api, {
+        method: "POST",
+        headers: headers,
+        body: JSON.stringify({
+          title,
+          questionType: type.toLocaleUpperCase(),
+          formId: form.id,
+        }),
+      }).then(async (response) => {
+        if (response.status === 201) {
+          return response.json();
+        }
+
+        throw new Error("Something went wrong");
+      });
+
+      await getFormContent(headers, form.id);
+    }
+  };
+
+  const deleteElement = async (questionId) => {
+    // /api/services/forms/questions/{id} DELETE
+    const token = localStorage.getItem(localStorageTokenKey);
+    if (token) {
+      const api = `${baseURL}/questions/${questionId}`;
+      const headers = {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      };
+      await fetch(api, {
+        method: "DELETE",
+        headers: headers,
+      }).then(async (response) => {
+        if (response.status === 200) {
+          await getFormContent(headers, form.id);
+
+          return response.json();
+        }
+
+        throw new Error("Something went wrong");
+      });
+    }
+  };
+
+  const handleOptionChange = (index, event) => {
+    if (formElements?.length > 0) {
+      const updatedElements = [...formElements];
+      updatedElements[index].questionOptions = event.target.value.split("\n").filter((option) => option.trim() !== "");;
+      setFormElements(updatedElements);
+    }
+  };
+
+  const handleDeleteAll = () => {
+    setFormElements([]);
+  };
+
+  useEffect(() => {
+    if (!form.id) {
+      navigate("/dashboard");
+    }
+  }, []);
 
   return (
     <>
@@ -67,159 +145,204 @@ const NewForm = () => {
           <div className="formElements">
             <span>FORM ELEMENTS</span>
             <hr />
+            {/* First Name Button */}
             <button
               className="firstNameButton"
-              onClick={() =>
-                addFormElement(
-                  "text",
-                  "FirstName",
-                  "text",
-                  "Enter your First Name:"
-                )
-              }
+              onClick={() => addElement("text", "Enter your First Name:")}
             >
               First Name
             </button>
+
+            {/* Surname Button */}
             <button
               className="surnameButton"
-              onClick={() =>
-                addFormElement("text", "Surname", "text", "Enter your surname:")
-              }
+              onClick={() => addElement("text", "Enter your Surname:")}
             >
               Surname
             </button>
+
+            {/* Email Button */}
             <button
               className="emailButton"
-              onClick={() =>
-                addFormElement("text", "Email", "email", "Enter your E-Mail:")
-              }
+              onClick={() => addElement("email", "Enter your E-mail:")}
             >
               E-Mail
             </button>
+
+            {/* Phone Number Button */}
             <button
               className="phoneNumberButton"
-              onClick={() =>
-                addFormElement(
-                  "text",
-                  "PhoneNumber",
-                  "tel",
-                  "Enter your Phone Number:"
-                )
-              }
+              onClick={() => addElement("tel", "Enter your Phone Number:")}
             >
               Phone Number
             </button>
             <hr />
+
+            {/* Text Buttons */}
             <button
-              className="longTextButton"
-              onClick={() =>
-                addFormElement(
-                  "comment",
-                  "LongText",
-                  "text",
-                  "Enter your comments:"
-                )
-              }
+              className="TextButton"
+              onClick={() => addElement("textarea", "Enter your comments:")}
             >
-              Long Text
+              Text Box
             </button>
+
+            {/* Checkbox Buttons */}
             <button
               className="checkboxButton"
-              onClick={() => {
-                addFormElement("checkbox", "checkbox", "", "Color:", [
-                  "Blue",
-                  "Red",
-                  "Purple",
-                ]);
-              }}
+              onClick={() => addElement("checkbox", "Checkbox title")}
             >
               Checkboxes
             </button>
+
+            {/* Dropdown Buttons */}
             <button
               className="dropdownButton"
-              onClick={() => {
-                addFormElement("dropdown", "dropdown", "", "Fruits:", [
-                  "Apple",
-                  "Orange",
-                  "Strawberry",
-                  "Watermelon",
-                ]);
-              }}
+              onClick={() => addElement("dropdown", "Dropdown title")}
             >
               Dropdown Menu
             </button>
+
+            {/* Radio Buttons */}
             <button
               className="radioButton"
-              onClick={() => {
-                addFormElement("radiogroup", "radiogroup", "", "Gender:", [
-                  "Male",
-                  "Female",
-                  "Other",
-                ]);
-              }}
+              onClick={() => addElement("radio", "Radio button title")}
             >
               Radio Button Group
             </button>
           </div>
         </div>
+
+        {/* Form Area */}
         <div
           id="newForm__right"
           className="page-content"
         >
+          {/* Page BG */}
           <div className="background">
             <img
               src={Background}
               alt="bg"
             />
           </div>
-          <div className="form-container">
-            <Survey
-              model={survey}
-              className="form"
-            />
-          </div>
-          <div className="button-container">
-            <button
-              type="submit"
-              className="formButton"
-            >
-              Save
-            </button>
-            <button
-              type="submit"
-              className="formButton"
-            >
-              Share
-            </button>
-          </div>
-
-          {/*  
           <div className="form-preview">
             <h2>Form Preview</h2>
             <form>
-              {formElements?.map((element, index) => (
+              {formElements?.questions?.map((element, index) => (
                 <div key={index}>
                   <label>{element.title}</label>
-                  {element.type === "text" && (
+                  {element.questionType === "text" && (
                     <input
                       type="text"
                       name={element.name}
                     />
                   )}
-                  {element.type === "email" && (
+                  {element.questionType === "email" && (
                     <input
                       type="email"
                       name={element.name}
                     />
                   )}
-                  {element.type === "textarea" && (
+                  {element.questionType === "tel" && (
+                    <input
+                      type="text"
+                      name={element.name}
+                    />
+                  )}
+                  {element.questionType === "textarea" && (
                     <textarea name={element.name}></textarea>
                   )}
-                  <button onClick={() => deleteElement(index)}>Delete</button>
+                  {element.questionType === "checkbox" && (
+                    <div>
+                      {element.questionOptions &&
+                        element.questionOptions.map((option, optionIndex) => (
+                          <div key={optionIndex}>
+                            <label>
+                              <input type="checkbox" />
+                              {option}
+                            </label>
+                          </div>
+                        ))}
+                      <textarea
+                        placeholder="Enter options (one per line)"
+                        onChange={(event) => handleOptionChange(index, event)}
+                      ></textarea>
+                    </div>
+                  )}
+                  {element.questionType === "radio" && (
+                    <div>
+                      {element.questionOptions &&
+                        element.questionOptions.map((option, optionIndex) => (
+                          <div key={optionIndex}>
+                            <label>
+                              <input
+                                type="radio"
+                                name={element.name}
+                                value={option}
+                              />
+                              {option}
+                            </label>
+                          </div>
+                        ))}
+                      <textarea
+                        placeholder="Enter options (one per line)"
+                        onChange={(event) => handleOptionChange(index, event)}
+                      ></textarea>
+                    </div>
+                  )}
+                  {element.questionType === "dropdown" && (
+                    <div>
+                      <select>
+                        {element.questionOptions &&
+                          element.questionOptions.map((option, optionIndex) => (
+                            <option
+                              key={optionIndex}
+                              value={option}
+                            >
+                              {option}
+                            </option>
+                          ))}
+                      </select>
+                      <textarea
+                        placeholder="Enter options (one per line)"
+                        onChange={(event) => handleOptionChange(index, event)}
+                      ></textarea>
+                    </div>
+                  )}
+                  <button
+                    type="button"
+                    onClick={() => deleteElement(element.id)}
+                  >
+                    Delete
+                  </button>
                 </div>
               ))}
+              <div className="button-container">
+                <button
+                  className="formButton"
+                  type="button"
+                  id="deleteForm"
+                  onClick={handleDeleteAll}
+                >
+                  Delete All
+                </button>
+                <button
+                  className="formButton"
+                  type="button"
+                  id="saveForm"
+                >
+                  Save
+                </button>
+                <button
+                  className="formButton"
+                  type="button"
+                  id="publishForm"
+                  onClick={handlePublish}
+                >
+                  Publish
+                </button>
+              </div>
             </form>
-          </div>*/}
+          </div>
         </div>
       </main>
     </>

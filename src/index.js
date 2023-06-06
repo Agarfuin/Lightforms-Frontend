@@ -13,7 +13,6 @@ import Registration from "./pages/Registration";
 
 // Styles
 import "./assets/styles/base.scss";
-import "survey-core/defaultV2.min.css";
 
 const theme = "light";
 const router = createBrowserRouter([

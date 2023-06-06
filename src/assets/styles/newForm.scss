@@ -5,6 +5,9 @@
     background-color: #312d2a;
     height: 100vh;
     padding: 50px 20px;
+    position: fixed;
+    max-height: calc(100vh - 3.5rem);
+    overflow-y: auto;
 
     // Sidebar yok ediliyor
     @media (max-width: 800px) {
@@ -12,7 +15,7 @@
     }
 
     .formElements {
-      gap: 28px;
+      gap: 25px;
       display: flex;
       flex-direction: column;
       align-items: left;
@@ -27,8 +30,8 @@
         width: 240px;
         background-color: rgb(217, 217, 217, 0.15);
         border-radius: 15px;
-        height: 50px;
-        font-size: 20px;
+        height: 45px;
+        font-size: 18px;
         border-style: none;
         color: var(--yellow);
         font-weight: 600;
@@ -48,19 +51,24 @@
   &__right {
     width: 100%;
 
+    @media (min-width: 801px) {
+      width: calc(100% - 280px);
+      margin-left: 280px;
+    }
+
     .background {
       position: fixed;
       top: 0;
       left: 50%;
-      transform: translateX(-38%);
+      transform: translateX(-50%);
       max-width: 1400px;
       min-width: 1200px;
       opacity: 0.7;
       z-index: -1;
-    }
 
-    .form {
-      background: none;
+      @media (min-width: 801px) {
+        transform: translateX(-38%);
+      }
     }
     
     .button-container {

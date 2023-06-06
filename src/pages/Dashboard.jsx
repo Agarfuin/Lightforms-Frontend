@@ -1,10 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 // Store
 import { useDispatch } from "react-redux";
-import { decrement } from "../store/features/userSlice";
+import { setForm } from "../store/features/formSlice";
 
 //Components
 import Header from "../components/Header/Header";
@@ -112,12 +112,35 @@ const Dashboard = () => {
           className="sidebar"
         >
           <div className="options">
-            <Link to="/newForm">
-              <button className="newFormButton">
+              <button className="newFormButton" onClick={async () => {
+                const token = localStorage.getItem(localStorageTokenKey);
+                if (token) {
+                  const api = `${baseURL}/forms` ;
+                  const headers = {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                  };
+                  const data = await fetch(api, {
+                    method: "POST",
+                    headers: headers,
+                    body: JSON.stringify(
+                      {
+                      title:"Yeah",
+                      description:"quarniyuerrak var mı"
+                    }),
+                  }).then((response) => {
+                    if (response.status === 201) {
+                      navigate("/newForm")
+                      return response.json();
+                    }
+                    throw new Error("Something went wrong");
+                  });
+                  dispatch(setForm(data))
+                }
+            }}>
                 <MdPostAdd />
                 New Form
               </button>
-            </Link>
             <hr />
             <span>My Forms</span>
             <button
