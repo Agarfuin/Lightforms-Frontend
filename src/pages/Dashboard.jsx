@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 // Store
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setForm } from "../store/features/formSlice";
 
 //Components
@@ -25,6 +25,7 @@ import {
 const baseURL = "https://api.lightforms.co/api/services";
 
 const Dashboard = () => {
+  const form = useSelector((state) => state.form.form);
   const localStorageTokenKey = "token";
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -82,6 +83,12 @@ const Dashboard = () => {
     }
   }, []);
 
+  useEffect(() => {
+    if (form.id) {
+      navigate("/newForm");
+    }
+  }, [form]);
+
   // useEffect(() => {
   //   const api = `${baseURL}/users/forms/${currentTab}`; // Replace this with the actual API endpoint for fetching forms
   //   const headers = {
@@ -112,10 +119,12 @@ const Dashboard = () => {
           className="sidebar"
         >
           <div className="options">
-              <button className="newFormButton" onClick={async () => {
+            <button
+              className="newFormButton"
+              onClick={async () => {
                 const token = localStorage.getItem(localStorageTokenKey);
                 if (token) {
-                  const api = `${baseURL}/forms` ;
+                  const api = `${baseURL}/forms`;
                   const headers = {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`,
@@ -123,24 +132,24 @@ const Dashboard = () => {
                   const data = await fetch(api, {
                     method: "POST",
                     headers: headers,
-                    body: JSON.stringify(
-                      {
-                      title:"Yeah",
-                      description:"quarniyuerrak var mı"
+                    body: JSON.stringify({
+                      title: "Form Title",
+                      description: "Form Description",
                     }),
                   }).then((response) => {
                     if (response.status === 201) {
-                      navigate("/newForm")
+                      navigate("/newForm");
                       return response.json();
                     }
                     throw new Error("Something went wrong");
                   });
-                  dispatch(setForm(data))
+                  dispatch(setForm(data));
                 }
-            }}>
-                <MdPostAdd />
-                New Form
-              </button>
+              }}
+            >
+              <MdPostAdd />
+              New Form
+            </button>
             <hr />
             <span>My Forms</span>
             <button
@@ -166,7 +175,8 @@ const Dashboard = () => {
             </button>
           </div>
         </div>
-        <div id="dashboard__right"
+        <div
+          id="dashboard__right"
           className="page-content"
         >
           <div className="background">

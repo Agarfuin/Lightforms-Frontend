@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 // Store
 import { useSelector } from "react-redux";
@@ -10,7 +11,6 @@ import Header from "../components/Header/Header";
 //Assets
 import Background from "../assets/images/logo_transparent.png";
 import "../assets/styles/newForm.scss";
-import { useNavigate } from "react-router-dom";
 
 const NewForm = () => {
   // Variables
@@ -24,7 +24,6 @@ const NewForm = () => {
 
   // States
   const [formElements, setFormElements] = useState([]);
-  const [check, setCheck] = useState([{questionOptions: []}]);
   //const [formTitle, setFormTitle] = useState(" ");
 
   const handlePublish = (e) => {
@@ -60,7 +59,6 @@ const NewForm = () => {
       }
       throw new Error("Something went wrong");
     });
-
     setFormElements(data);
   };
 
@@ -97,56 +95,70 @@ const NewForm = () => {
   const deleteElement = async (questionId) => {
     // /api/services/forms/questions/{id} DELETE
 
-    // const token = localStorage.getItem(localStorageTokenKey);
-    // if (token) {
-    //   const api = `${baseURL}/questions/${questionId}`;
-    //   const headers = {
-    //     "Content-Type": "application/json",
-    //     Authorization: `Bearer ${token}`,
-    //   };
-    //   await fetch(api, {
-    //     method: "DELETE",
-    //     headers: headers,
-    //   }).then(async (response) => {
-    //     // if (response.status === 200) {
-    //     //   await getFormContent(headers, form.id);
-    //     //   return response.json();
-    //     // }
-
-    //     // throw new Error("Something went wrong");
-    //   });
-    // }
+    const token = localStorage.getItem(localStorageTokenKey);
+    if (token) {
+      const api = `${baseURL}/questions/${questionId}`;
+      const headers = {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      };
+      await fetch(api, {
+        method: "DELETE",
+        headers: headers,
+      }).then(async (response) => {
+        if (response.status === 200) {
+          await getFormContent(headers, form.id);
+          return response.json();
+        }
+        throw new Error("Something went wrong");
+      });
+    }
   };
 
-  const handleOptionChange = (index, event) => {
+  const handleOptionChange = async (id, event) => {
+    if (event.key === "Enter") {
+      const splited = [
+        ...event.target.value
+          .split("\n")
+          .filter((option) => option.trim() !== ""),
+      ];
 
+      const token = localStorage.getItem(localStorageTokenKey);
+      try {
+        const headers = {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        };
+        await fetch(`${baseURL}/questions/${id}/options`, {
+          method: "POST",
+          body: JSON.stringify({ optionText: splited[splited.length - 1] }),
+          headers: headers,
+        });
+        await getFormContent(headers, form.id);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  };
 
-      // const updatedElements = [...formElements];
-      // updatedElements[0].questionOptions[index] = event.target.value.split("\n").filter((option) => option.trim() !== "");;
-      // setFormElements(updatedElements);
-    
-
-    const updatedElements = [...formElements.questions[index].questionOptions];
-    updatedElements[index] = {
-      ...updatedElements[index],
-      questionOptions: event.target.value.split("\n").filter((option) => option.trim() !== "")
+  const deleteQuestionOptions = async (e, id) => {
+    e.preventDefault();
+    const token = localStorage.getItem(localStorageTokenKey);
+    const headers = {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
     };
-
-    setCheck(updatedElements);
-    formElements.questions[index].questionOptions= check[index].questionOptions
-    
-
-    
-
-    // const updatedElements = [...formElements.questions[0].questionOptions];
-    // updatedElements[index] = {
-    //   ...updatedElements[index],
-    //   questionOptions: event.target.value
-    //     .split("\n")
-    //     .filter((option) => option.trim() !== "")
-    // };
-    // setCheck(updatedElements);
-    // console.log(formElements.questions);
+    if (token) {
+      try {
+        await fetch(`${baseURL}/questions/options/${id}`, {
+          method: "DELETE",
+          headers,
+        });
+        await getFormContent(headers, form.id);
+      } catch (error) {
+        console.log(error);
+      }
+    }
   };
 
   const handleDeleteAll = () => {
@@ -254,7 +266,7 @@ const NewForm = () => {
             />
           </div>
           <div className="form-preview">
-            <h2 className="formTitle">{/* {formTitle} */}Form Title</h2>
+            <h2 className="formTitle">{/* {formTitle} */}Form</h2>
             <form className="newForm">
               {formElements?.questions?.map((element, index) => (
                 <div
@@ -287,38 +299,65 @@ const NewForm = () => {
                     <div>
                       {element.questionOptions &&
                         element.questionOptions.map((item, index) => (
-                          <div key={index}>
+                          <div
+                            style={{
+                              display: "flex",
+                              justifyContent: "space-between",
+                            }}
+                            key={index}
+                          >
                             <label>
                               <input type="checkbox" />
-                              {item}
+                              {item.optionText}
                             </label>
+                            <button
+                              onClick={(e) => deleteQuestionOptions(e, item.id)}
+                            >
+                              Delete
+                            </button>
                           </div>
                         ))}
                       <textarea
                         placeholder="Enter options (one per line)"
-                        onChange={(event) => handleOptionChange(index, event)}
+                        onKeyPress={(event) =>
+                          handleOptionChange(element.id, event)
+                        }
                       ></textarea>
-                      
                     </div>
                   )}
                   {element.questionType === "radio" && (
                     <div>
                       {element.questionOptions &&
                         element.questionOptions.map((option, optionIndex) => (
-                          <div key={optionIndex}>
+                          <div
+                            style={{
+                              display: "flex",
+                              justifyContent: "space-between",
+                            }}
+                            key={optionIndex}
+                          >
                             <label>
                               <input
                                 type="radio"
-                                name={element.name}
+                                name={element.id}
                                 value={option}
                               />
-                              {option}
+                              {option.optionText}
                             </label>
+                            <button
+                              onClick={(e) =>
+                                deleteQuestionOptions(e, option.id)
+                              }
+                            >
+                              Delete
+                            </button>
                           </div>
                         ))}
                       <textarea
                         placeholder="Enter options (one per line)"
-                        onChange={(event) => handleOptionChange(index, event)}
+                        onKeyPress={(event) =>
+                          handleOptionChange(element.id, event)
+                        }
                       ></textarea>
                     </div>
                   )}
@@ -331,13 +370,15 @@ const NewForm = () => {
                               key={optionIndex}
                               value={option}
                             >
-                              {option}
+                              {option.optionText}
                             </option>
                           ))}
                       </select>
                       <textarea
                         placeholder="Enter options (one per line)"
-                        onChange={(event) => handleOptionChange(index, event)}
+                        onKeyPress={(event) =>
+                          handleOptionChange(element.id, event)
+                        }
                       ></textarea>
                     </div>
                   )}
