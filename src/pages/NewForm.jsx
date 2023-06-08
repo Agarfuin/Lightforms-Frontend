@@ -1,7 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-
+import { useNavigate, useParams, useRouteLoaderData } from "react-router-dom";
 // Store
 import { useSelector } from "react-redux";
 
@@ -11,10 +10,13 @@ import Header from "../components/Header/Header";
 //Assets
 import Background from "../assets/images/logo_transparent.png";
 import "../assets/styles/newForm.scss";
+import { GrFormClose } from "react-icons/gr";
 
 const NewForm = () => {
   // Variables
   const navigate = useNavigate();
+  const params = useParams();
+  const formFields = useRouteLoaderData("quarniyuerrak");
 
   // Get Form Id
   const form = useSelector((state) => state.form.form);
@@ -26,25 +28,29 @@ const NewForm = () => {
   const [formElements, setFormElements] = useState([]);
   //const [formTitle, setFormTitle] = useState(" ");
 
-  const handlePublish = (e) => {
+  const handlePublish = async (e) => {
+    //POST /api/services/forms/{formId}/publish --> returns FormUUID
+    // lightforms.co/forms/fbb0f4a0-889c-455b-b413-d5993986f661/edit
+
     e.preventDefault();
     const token = localStorage.getItem(localStorageTokenKey);
     if (token) {
-      const api = baseURL;
+      const api = `${baseURL}/${form.id}/publish`;
       const headers = {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       };
-      fetch(api, {
-        method: "POST",
-        headers: headers,
-        body: JSON.stringify(formElements),
-      }).then((response) => {
-        if (response.status === 200) {
-          return response.json();
-        }
-        // throw new Error("Something went wrong");
-      });
+      try {
+        const response = await fetch(api, {
+          method: "POST",
+          headers: headers,
+          body: JSON.stringify(formElements),
+        });
+        const { formIdentifier } = await response.json();
+        navigate(`/forms/${formIdentifier}`);
+      } catch (error) {
+        console.log(error);
+      }
     }
   };
 
@@ -60,6 +66,7 @@ const NewForm = () => {
       throw new Error("Something went wrong");
     });
     setFormElements(data);
+    console.log(data);
   };
 
   const addElement = async (type, title) => {
@@ -135,6 +142,7 @@ const NewForm = () => {
           headers: headers,
         });
         await getFormContent(headers, form.id);
+        event.target.value = "";
       } catch (error) {
         console.log(error);
       }
@@ -166,7 +174,7 @@ const NewForm = () => {
   };
 
   useEffect(() => {
-    if (!form.id) {
+    if (!form.id && !params.formId) {
       navigate("/dashboard");
     }
     /* const inputTitle = prompt("Enter the form title:");
@@ -175,88 +183,99 @@ const NewForm = () => {
     } */
   }, []);
 
+  useEffect(() => {
+    if (formFields) {
+      setFormElements(formFields);
+      console.log(formFields);
+    }
+  }, [formFields]);
+
   return (
     <>
       <Header isNewForm />
       <main id="newForm">
-        <div
-          id="newForm__left"
-          className="sidebar"
-        >
-          <div className="formElementsList">
-            <span>FORM ELEMENTS</span>
-            <hr />
-            {/* First Name Button */}
-            <button
-              className="firstNameButton"
-              onClick={() => addElement("text", "Enter your First Name:")}
-            >
-              First Name
-            </button>
+        {!params.formId && (
+          <div
+            id="newForm__left"
+            className="sidebar"
+          >
+            <div className="formElementsList">
+              <span>FORM ELEMENTS</span>
+              <hr />
+              {/* First Name Button */}
+              <button
+                className="firstNameButton"
+                onClick={() => addElement("text", "Enter your First Name:")}
+              >
+                First Name
+              </button>
 
-            {/* Surname Button */}
-            <button
-              className="surnameButton"
-              onClick={() => addElement("text", "Enter your Surname:")}
-            >
-              Surname
-            </button>
+              {/* Surname Button */}
+              <button
+                className="surnameButton"
+                onClick={() => addElement("text", "Enter your Surname:")}
+              >
+                Surname
+              </button>
 
-            {/* Email Button */}
-            <button
-              className="emailButton"
-              onClick={() => addElement("email", "Enter your E-mail:")}
-            >
-              E-Mail
-            </button>
+              {/* Email Button */}
+              <button
+                className="emailButton"
+                onClick={() => addElement("email", "Enter your E-mail:")}
+              >
+                E-Mail
+              </button>
 
-            {/* Phone Number Button */}
-            <button
-              className="phoneNumberButton"
-              onClick={() => addElement("tel", "Enter your Phone Number:")}
-            >
-              Phone Number
-            </button>
-            <hr />
+              {/* Phone Number Button */}
+              <button
+                className="phoneNumberButton"
+                onClick={() => addElement("tel", "Enter your Phone Number:")}
+              >
+                Phone Number
+              </button>
+              <hr />
 
-            {/* Text Buttons */}
-            <button
-              className="TextButton"
-              onClick={() => addElement("textarea", "Enter your comments:")}
-            >
-              Text Box
-            </button>
+              {/* Text Buttons */}
+              <button
+                className="TextButton"
+                onClick={() => addElement("textarea", "Enter your comments:")}
+              >
+                Text Box
+              </button>
 
-            {/* Checkbox Buttons */}
-            <button
-              className="checkboxButton"
-              onClick={() => addElement("checkbox", "Checkbox title")}
-            >
-              Checkboxes
-            </button>
+              {/* Checkbox Buttons */}
+              <button
+                className="checkboxButton"
+                onClick={() => addElement("checkbox", "Checkbox title")}
+              >
+                Checkboxes
+              </button>
 
-            {/* Dropdown Buttons */}
-            <button
-              className="dropdownButton"
-              onClick={() => addElement("dropdown", "Dropdown title")}
-            >
-              Dropdown Menu
-            </button>
+              {/* Dropdown Buttons */}
+              <button
+                className="dropdownButton"
+                onClick={() => addElement("dropdown", "Dropdown title")}
+              >
+                Dropdown Menu
+              </button>
 
-            {/* Radio Buttons */}
-            <button
-              className="radioButton"
-              onClick={() => addElement("radio", "Radio button title")}
-            >
-              Radio Button Group
-            </button>
+              {/* Radio Buttons */}
+              <button
+                className="radioButton"
+                onClick={() => addElement("radio", "Radio button title")}
+              >
+                Radio Button Group
+              </button>
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Form Area */}
         <div
-          id="newForm__right"
-          className="page-content"
+          id={`newForm__right`}
+          className={`page-content ${
+            !params.formId ? "edit-mode" : "view-mode"
+          }`}
         >
           {/* Page BG */}
           <div className="background">
@@ -267,7 +286,10 @@ const NewForm = () => {
           </div>
           <div className="form-preview">
             <h2 className="formTitle">{/* {formTitle} */}Form</h2>
-            <form className="newForm">
+            <form
+              className="newForm"
+              onSubmit={handlePublish}
+            >
               {formElements?.questions?.map((element, index) => (
                 <div
                   className="formElements"
@@ -297,26 +319,31 @@ const NewForm = () => {
                   )}
                   {element.questionType === "checkbox" && (
                     <div>
-                      {element.questionOptions &&
-                        element.questionOptions.map((item, index) => (
-                          <div
-                            style={{
-                              display: "flex",
-                              justifyContent: "space-between",
-                            }}
-                            key={index}
-                          >
-                            <label>
-                              <input type="checkbox" />
-                              {item.optionText}
-                            </label>
-                            <button
-                              onClick={(e) => deleteQuestionOptions(e, item.id)}
+                      <ul className="options">
+                        {element.questionOptions &&
+                          element.questionOptions.map((option, index) => (
+                            <li
+                              className="option"
+                              key={index}
                             >
-                              Delete
-                            </button>
-                          </div>
-                        ))}
+                              <label>
+                                <input type="checkbox" />
+                                <span>{option.optionText}</span>
+                              </label>
+                              {!params.formId && (
+                                <button
+                                  onClick={(e) =>
+                                    deleteQuestionOptions(e, option.id)
+                                  }
+                                  className="optionDeleteButton"
+                                >
+                                  <GrFormClose size={10} />
+                                </button>
+                              )}
+                            </li>
+                          ))}
+                      </ul>
+
                       <textarea
                         placeholder="Enter options (one per line)"
                         onKeyPress={(event) =>
@@ -327,32 +354,34 @@ const NewForm = () => {
                   )}
                   {element.questionType === "radio" && (
                     <div>
-                      {element.questionOptions &&
-                        element.questionOptions.map((option, optionIndex) => (
-                          <div
-                            style={{
-                              display: "flex",
-                              justifyContent: "space-between",
-                            }}
-                            key={optionIndex}
-                          >
-                            <label>
-                              <input
-                                type="radio"
-                                name={element.id}
-                                value={option}
-                              />
-                              {option.optionText}
-                            </label>
-                            <button
-                              onClick={(e) =>
-                                deleteQuestionOptions(e, option.id)
-                              }
+                      <ul className="options">
+                        {element.questionOptions &&
+                          element.questionOptions.map((option, optionIndex) => (
+                            <li
+                              className="option"
+                              key={optionIndex}
                             >
-                              Delete
-                            </button>
-                          </div>
-                        ))}
+                              <label>
+                                <input
+                                  type="radio"
+                                  name={element.id}
+                                  value={option}
+                                />
+                                {option.optionText}
+                              </label>
+                              {!params.formId && (
+                                <button
+                                  onClick={(e) =>
+                                    deleteQuestionOptions(e, option.id)
+                                  }
+                                  className="optionDeleteButton"
+                                >
+                                  <GrFormClose size={10} />
+                                </button>
+                              )}
+                            </li>
+                          ))}
+                      </ul>
                       <textarea
                         placeholder="Enter options (one per line)"
                         onKeyPress={(event) =>
@@ -363,7 +392,13 @@ const NewForm = () => {
                   )}
                   {element.questionType === "dropdown" && (
                     <div>
-                      <select>
+                      <select /* value={""} */>
+                        {/* <option
+                          disabled={true}
+                          value=""
+                        >
+                          Select
+                        </option> */}
                         {element.questionOptions &&
                           element.questionOptions.map((option, optionIndex) => (
                             <option
@@ -382,34 +417,48 @@ const NewForm = () => {
                       ></textarea>
                     </div>
                   )}
-                  <div className="deleteButton">
-                    <button
-                      type="button"
-                      onClick={() => deleteElement(element.id)}
-                    >
-                      Delete
-                    </button>
-                  </div>
+                  {!params.formId && (
+                    <div className="deleteButton">
+                      <button
+                        type="button"
+                        onClick={() => deleteElement(element.id)}
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  )}
                 </div>
               ))}
               <div className="button-container">
-                <button
-                  className="formButton"
-                  type="button"
-                  id="deleteForm"
-                  onClick={handleDeleteAll}
-                >
-                  Delete All
-                </button>
+                {!params.formId && (
+                  <button
+                    className="formButton"
+                    type="button"
+                    id="deleteForm"
+                    onClick={handleDeleteAll}
+                  >
+                    Delete All
+                  </button>
+                )}
 
-                <button
-                  className="formButton"
-                  type="button"
-                  id="publishForm"
-                  onClick={handlePublish}
-                >
-                  Publish
-                </button>
+                {!params.formId && (
+                  <button
+                    className="formButton"
+                    type="submit"
+                    id="publishForm"
+                  >
+                    Publish
+                  </button>
+                )}
+
+                {params.formId && (
+                  <button
+                    className="formButton"
+                    type="submit"
+                  >
+                    Submit
+                  </button>
+                )}
               </div>
             </form>
           </div>
