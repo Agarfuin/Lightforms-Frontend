@@ -82,26 +82,26 @@ const Dashboard = () => {
     }
   }, []);
 
-  useEffect(() => {
-    const api = `${baseURL}/users/forms/${currentTab}`; // Replace this with the actual API endpoint for fetching forms
-    const headers = {
-      "Content-Type": "application/json",
-    };
+  // useEffect(() => {
+  //   const api = `${baseURL}/users/forms/${currentTab}`; // Replace this with the actual API endpoint for fetching forms
+  //   const headers = {
+  //     "Content-Type": "application/json",
+  //   };
 
-    fetch(api, {
-      method: "GET",
-      headers: headers,
-    })
-      .then((response) => {
-        if (response.status === 200) {
-          return response.json();
-        }
-        throw new Error("Something went wrong");
-      })
-      .then((data) => {
-        setForms({ ...forms, currentTab: data });
-      });
-  }, [currentTab]);
+  //   fetch(api, {
+  //     method: "GET",
+  //     headers: headers,
+  //   })
+  //     .then((response) => {
+  //       if (response.status === 200) {
+  //         return response.json();
+  //       }
+  //       throw new Error("Something went wrong");
+  //     })
+  //     .then((data) => {
+  //       setForms({ ...forms, currentTab: data });
+  //     });
+  // }, [currentTab]);
 
   return (
     <>

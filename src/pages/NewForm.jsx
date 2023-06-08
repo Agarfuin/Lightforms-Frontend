@@ -24,6 +24,8 @@ const NewForm = () => {
 
   // States
   const [formElements, setFormElements] = useState([]);
+  const [check, setCheck] = useState([{questionOptions: []}]);
+  //const [formTitle, setFormTitle] = useState(" ");
 
   const handlePublish = (e) => {
     e.preventDefault();
@@ -42,7 +44,7 @@ const NewForm = () => {
         if (response.status === 200) {
           return response.json();
         }
-        throw new Error("Something went wrong");
+        // throw new Error("Something went wrong");
       });
     }
   };
@@ -94,34 +96,57 @@ const NewForm = () => {
 
   const deleteElement = async (questionId) => {
     // /api/services/forms/questions/{id} DELETE
-    const token = localStorage.getItem(localStorageTokenKey);
-    if (token) {
-      const api = `${baseURL}/questions/${questionId}`;
-      const headers = {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      };
-      await fetch(api, {
-        method: "DELETE",
-        headers: headers,
-      }).then(async (response) => {
-        if (response.status === 200) {
-          await getFormContent(headers, form.id);
 
-          return response.json();
-        }
+    // const token = localStorage.getItem(localStorageTokenKey);
+    // if (token) {
+    //   const api = `${baseURL}/questions/${questionId}`;
+    //   const headers = {
+    //     "Content-Type": "application/json",
+    //     Authorization: `Bearer ${token}`,
+    //   };
+    //   await fetch(api, {
+    //     method: "DELETE",
+    //     headers: headers,
+    //   }).then(async (response) => {
+    //     // if (response.status === 200) {
+    //     //   await getFormContent(headers, form.id);
+    //     //   return response.json();
+    //     // }
 
-        throw new Error("Something went wrong");
-      });
-    }
+    //     // throw new Error("Something went wrong");
+    //   });
+    // }
   };
 
   const handleOptionChange = (index, event) => {
-    if (formElements?.length > 0) {
-      const updatedElements = [...formElements];
-      updatedElements[index].questionOptions = event.target.value.split("\n").filter((option) => option.trim() !== "");;
-      setFormElements(updatedElements);
-    }
+
+
+      // const updatedElements = [...formElements];
+      // updatedElements[0].questionOptions[index] = event.target.value.split("\n").filter((option) => option.trim() !== "");;
+      // setFormElements(updatedElements);
+    
+
+    const updatedElements = [...formElements.questions[index].questionOptions];
+    updatedElements[index] = {
+      ...updatedElements[index],
+      questionOptions: event.target.value.split("\n").filter((option) => option.trim() !== "")
+    };
+
+    setCheck(updatedElements);
+    formElements.questions[index].questionOptions= check[index].questionOptions
+    
+
+    
+
+    // const updatedElements = [...formElements.questions[0].questionOptions];
+    // updatedElements[index] = {
+    //   ...updatedElements[index],
+    //   questionOptions: event.target.value
+    //     .split("\n")
+    //     .filter((option) => option.trim() !== "")
+    // };
+    // setCheck(updatedElements);
+    // console.log(formElements.questions);
   };
 
   const handleDeleteAll = () => {
@@ -132,6 +157,10 @@ const NewForm = () => {
     if (!form.id) {
       navigate("/dashboard");
     }
+    /* const inputTitle = prompt("Enter the form title:");
+    if (inputTitle) {
+      setFormTitle(inputTitle);
+    } */
   }, []);
 
   return (
@@ -142,7 +171,7 @@ const NewForm = () => {
           id="newForm__left"
           className="sidebar"
         >
-          <div className="formElements">
+          <div className="formElementsList">
             <span>FORM ELEMENTS</span>
             <hr />
             {/* First Name Button */}
@@ -225,11 +254,14 @@ const NewForm = () => {
             />
           </div>
           <div className="form-preview">
-            <h2>Form Preview</h2>
-            <form>
+            <h2 className="formTitle">{/* {formTitle} */}Form Title</h2>
+            <form className="newForm">
               {formElements?.questions?.map((element, index) => (
-                <div key={index}>
-                  <label>{element.title}</label>
+                <div
+                  className="formElements"
+                  key={index}
+                >
+                  <label className="formElementTitle">{element.title}</label>
                   {element.questionType === "text" && (
                     <input
                       type="text"
@@ -254,11 +286,11 @@ const NewForm = () => {
                   {element.questionType === "checkbox" && (
                     <div>
                       {element.questionOptions &&
-                        element.questionOptions.map((option, optionIndex) => (
-                          <div key={optionIndex}>
+                        element.questionOptions.map((item, index) => (
+                          <div key={index}>
                             <label>
                               <input type="checkbox" />
-                              {option}
+                              {item}
                             </label>
                           </div>
                         ))}
@@ -266,6 +298,7 @@ const NewForm = () => {
                         placeholder="Enter options (one per line)"
                         onChange={(event) => handleOptionChange(index, event)}
                       ></textarea>
+                      
                     </div>
                   )}
                   {element.questionType === "radio" && (
@@ -308,12 +341,14 @@ const NewForm = () => {
                       ></textarea>
                     </div>
                   )}
-                  <button
-                    type="button"
-                    onClick={() => deleteElement(element.id)}
-                  >
-                    Delete
-                  </button>
+                  <div className="deleteButton">
+                    <button
+                      type="button"
+                      onClick={() => deleteElement(element.id)}
+                    >
+                      Delete
+                    </button>
+                  </div>
                 </div>
               ))}
               <div className="button-container">
@@ -325,13 +360,7 @@ const NewForm = () => {
                 >
                   Delete All
                 </button>
-                <button
-                  className="formButton"
-                  type="button"
-                  id="saveForm"
-                >
-                  Save
-                </button>
+
                 <button
                   className="formButton"
                   type="button"

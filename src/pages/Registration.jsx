@@ -128,7 +128,7 @@ const Registration = () => {
             swapPanel ? `right-panel-active` : ``
           }`}
         >
-          <form onSubmit={handleSignUp}>
+          <form className="registrationForm" onSubmit={handleSignUp}>
             <h2>Sign Up</h2>
             <FormInput
               label="Name"
@@ -172,7 +172,7 @@ const Registration = () => {
             swapPanel ? `right-panel-active` : ``
           }`}
         >
-          <form onSubmit={handleSignIn}>
+          <form className="registrationForm" onSubmit={handleSignIn}>
             <h2>Sign In</h2>
             <FormInput
               label="E-Mail"
