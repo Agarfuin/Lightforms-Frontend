@@ -3,8 +3,8 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
 form:{
   id: null,
-  title:"",
-  formIdentifier:""
+  title:null,
+  formIdentifier:null
 }
 
 };

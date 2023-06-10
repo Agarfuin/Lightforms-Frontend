@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 // Store
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { setForm } from "../store/features/formSlice";
 
 //Components
@@ -27,7 +27,6 @@ import {
 const baseURL = "https://api.lightforms.co/api/services";
 
 const Dashboard = () => {
-  const form = useSelector((state) => state.form.form);
   const localStorageTokenKey = "token";
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -133,7 +132,7 @@ const Dashboard = () => {
   }, []);
 
   useEffect(() => {
-    dispatch(setForm({ id: "", title: "", formIdentifier: null }));
+    dispatch(setForm({ id: null, title: null, formIdentifier: null }));
   }, []);
 
   useEffect(() => {

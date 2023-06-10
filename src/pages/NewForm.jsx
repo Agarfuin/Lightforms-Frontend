@@ -7,7 +7,8 @@ import {
   useRouteLoaderData,
 } from "react-router-dom";
 // Store
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { setForm } from "../store/features/formSlice";
 
 //Components
 import Header from "../components/Header/Header";
@@ -21,10 +22,12 @@ const NewForm = () => {
   // Variables
   const navigate = useNavigate();
   const params = useParams();
+  const dispatch = useDispatch();
+
   const viewFormFields = useRouteLoaderData("viewFormWithId");
   const editFormFields = useRouteLoaderData("editFormWithId");
 
-  // Get Form Id
+  // Get Form
   const form = useSelector((state) => state.form.form);
 
   const localStorageTokenKey = "token";
@@ -32,7 +35,25 @@ const NewForm = () => {
 
   // States
   const [formElements, setFormElements] = useState([]);
-  //const [formTitle, setFormTitle] = useState(" ");
+
+  const getPageMode = () => {
+    let mode = "";
+    // eslint-disable-next-line default-case
+    switch (
+      window.location.pathname.substring(
+        window.location.pathname.lastIndexOf("/")
+      )
+    ) {
+      case "/edit":
+        mode = "edit";
+        break;
+      case "/newForm":
+        mode = "newForm";
+        break;
+    }
+
+    return mode;
+  };
 
   const handlePublish = async (e) => {
     //POST /api/services/forms/{formId}/publish --> returns FormUUID
@@ -179,22 +200,19 @@ const NewForm = () => {
     if ((!form.id && !params.formId) || !token) {
       navigate("/dashboard");
     }
-    // if (!viewFormFields) {
-    //   console.log("ben çalİştİm")
-    //   const inputTitle = prompt("Enter the form title:");
-    //   if (inputTitle) {
-    //     setFormTitle(inputTitle);
-    //   }
-    // }
+
+    dispatch(setForm(form));
   }, []);
 
   useEffect(() => {
     if (viewFormFields) {
       setFormElements(viewFormFields);
+      dispatch(setForm(viewFormFields))
     }
 
     if (editFormFields) {
       setFormElements(editFormFields);
+      dispatch(setForm(editFormFields))
     }
   }, [viewFormFields, editFormFields]);
 
@@ -202,7 +220,7 @@ const NewForm = () => {
     <>
       <Header isNewForm />
       <main id="newForm">
-        {!params.formId && (
+        {(getPageMode() === "edit" || getPageMode() === "newForm") && (
           <div
             id="newForm__left"
             className="sidebar"
@@ -254,7 +272,7 @@ const NewForm = () => {
               {/* Checkbox Buttons */}
               <button
                 className="checkboxButton"
-                onClick={() => addElement("checkbox", "Checkbox title")}
+                onClick={() => addElement("checkbox", "Checkbox")}
               >
                 Checkboxes
               </button>
@@ -262,7 +280,7 @@ const NewForm = () => {
               {/* Dropdown Buttons */}
               <button
                 className="dropdownButton"
-                onClick={() => addElement("dropdown", "Dropdown title")}
+                onClick={() => addElement("dropdown", "Dropdown")}
               >
                 Dropdown Menu
               </button>
@@ -270,7 +288,7 @@ const NewForm = () => {
               {/* Radio Buttons */}
               <button
                 className="radioButton"
-                onClick={() => addElement("radio", "Radio button title")}
+                onClick={() => addElement("radio", "Radio Buttons")}
               >
                 Radio Button Group
               </button>
@@ -282,7 +300,9 @@ const NewForm = () => {
         <div
           id={`newForm__right`}
           className={`page-content ${
-            !params.formId ? "edit-mode" : "view-mode"
+            getPageMode() === "edit" || getPageMode() === "newForm"
+              ? "edit-mode"
+              : "view-mode"
           }`}
         >
           {/* Page BG */}
@@ -293,7 +313,7 @@ const NewForm = () => {
             />
           </div>
           <div className="form-preview">
-            <h2 className="formTitle">{/* {formTitle} */}Form</h2>
+            <h2 className="formTitle">Form</h2>
             <form
               className="newForm"
               onSubmit={handlePublish}
@@ -338,7 +358,8 @@ const NewForm = () => {
                                 <input type="checkbox" />
                                 <span>{option.optionText}</span>
                               </label>
-                              {!params.formId && (
+                              {(getPageMode() === "edit" ||
+                                getPageMode() === "newForm") && (
                                 <button
                                   onClick={(e) =>
                                     deleteQuestionOptions(e, option.id)
@@ -351,7 +372,8 @@ const NewForm = () => {
                             </li>
                           ))}
                       </ul>
-                      {!params.formId && (
+                      {(getPageMode() === "edit" ||
+                        getPageMode() === "newForm") && (
                         <textarea
                           placeholder="Enter options (one per line)"
                           onKeyPress={(event) =>
@@ -378,7 +400,8 @@ const NewForm = () => {
                                 />
                                 {option.optionText}
                               </label>
-                              {!params.formId && (
+                              {(getPageMode() === "edit" ||
+                                getPageMode() === "newForm") && (
                                 <button
                                   onClick={(e) =>
                                     deleteQuestionOptions(e, option.id)
@@ -391,7 +414,8 @@ const NewForm = () => {
                             </li>
                           ))}
                       </ul>
-                      {!params.formId && (
+                      {(getPageMode() === "edit" ||
+                        getPageMode() === "newForm") && (
                         <textarea
                           placeholder="Enter options (one per line)"
                           onKeyPress={(event) =>
@@ -421,7 +445,8 @@ const NewForm = () => {
                             </option>
                           ))}
                       </select>
-                      {!params.formId && (
+                      {(getPageMode() === "edit" ||
+                        getPageMode() === "newForm") && (
                         <textarea
                           placeholder="Enter options (one per line)"
                           onKeyPress={(event) =>
@@ -431,7 +456,8 @@ const NewForm = () => {
                       )}
                     </div>
                   )}
-                  {!params.formId && (
+                  {(getPageMode() === "edit" ||
+                    getPageMode() === "newForm") && (
                     <div className="deleteButton">
                       <button
                         type="button"
@@ -444,7 +470,7 @@ const NewForm = () => {
                 </div>
               ))}
               <div className="button-container">
-                {!params.formId && (
+                {(getPageMode() === "edit" || getPageMode() === "newForm") && (
                   <Link to="/dashboard">
                     <button
                       className="formButton"
@@ -456,7 +482,7 @@ const NewForm = () => {
                   </Link>
                 )}
 
-                {!params.formId && (
+                {(getPageMode() === "edit" || getPageMode() === "newForm") && (
                   <button
                     className="formButton"
                     type="submit"
