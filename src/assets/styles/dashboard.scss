@@ -133,6 +133,57 @@
           }
         }
       }
+
+      &__item-actions{
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-top: 10px;
+
+        .formEditButton{
+          background: #bda298;
+          -webkit-border-radius: 30;
+          -moz-border-radius: 30;
+          border: none;
+          border-radius: 50%;
+          -webkit-box-shadow: 1px 1px 5px #666666;
+          -moz-box-shadow: 1px 1px 5px #666666;
+          box-shadow: 1px 1px 5px #666666;
+          padding: 4px 4px;
+          text-decoration: none;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+        .formDeleteButton{
+          background: #bda298;
+          background-image: -webkit-linear-gradient(top, #bda298, #f72d2d);
+          background-image: -moz-linear-gradient(top, #bda298, #f72d2d);
+          background-image: -ms-linear-gradient(top, #bda298, #f72d2d);
+          background-image: -o-linear-gradient(top, #bda298, #f72d2d);
+          background-image: linear-gradient(to bottom, #bda298, #f72d2d);
+          -webkit-border-radius: 30;
+          -moz-border-radius: 30;
+          border: none;
+          border-radius: 50%;
+          -webkit-box-shadow: 1px 1px 5px #666666;
+          -moz-box-shadow: 1px 1px 5px #666666;
+          box-shadow: 1px 1px 5px #666666;
+          padding: 4px 4px;
+          text-decoration: none;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+        button:hover {
+            background: #e98686;
+            background-image: -webkit-linear-gradient(top, #e98686, #bda298);
+            background-image: -moz-linear-gradient(top, #e98686, #bda298);
+            background-image: -ms-linear-gradient(top, #e98686, #bda298);
+            background-image: -o-linear-gradient(top, #e98686, #bda298);
+            background-image: linear-gradient(to bottom, #e98686, #bda298);
+        }      
+      }
     }
   }
 }

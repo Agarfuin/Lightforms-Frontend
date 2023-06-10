@@ -50,7 +50,6 @@ const Registration = () => {
       })
         .then((response) => response.json())
         .then((data) => {
-          console.log(data);
           if (data.token) {
             localStorage.setItem(localStorageTokenKey, data.token);
             navigate("/dashboard");

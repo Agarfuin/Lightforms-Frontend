@@ -1,6 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
-import { useNavigate, useParams, useRouteLoaderData } from "react-router-dom";
+import {
+  Link,
+  useNavigate,
+  useParams,
+  useRouteLoaderData,
+} from "react-router-dom";
 // Store
 import { useSelector } from "react-redux";
 
@@ -16,7 +21,8 @@ const NewForm = () => {
   // Variables
   const navigate = useNavigate();
   const params = useParams();
-  const formFields = useRouteLoaderData("quarniyuerrak");
+  const viewFormFields = useRouteLoaderData("viewFormWithId");
+  const editFormFields = useRouteLoaderData("editFormWithId");
 
   // Get Form Id
   const form = useSelector((state) => state.form.form);
@@ -66,7 +72,6 @@ const NewForm = () => {
       throw new Error("Something went wrong");
     });
     setFormElements(data);
-    console.log(data);
   };
 
   const addElement = async (type, title) => {
@@ -169,26 +174,29 @@ const NewForm = () => {
     }
   };
 
-  const handleDeleteAll = () => {
-    setFormElements([]);
-  };
-
   useEffect(() => {
-    if (!form.id && !params.formId) {
+    const token = localStorage.getItem(localStorageTokenKey);
+    if ((!form.id && !params.formId) || !token) {
       navigate("/dashboard");
     }
-    /* const inputTitle = prompt("Enter the form title:");
-    if (inputTitle) {
-      setFormTitle(inputTitle);
-    } */
+    // if (!viewFormFields) {
+    //   console.log("ben çalİştİm")
+    //   const inputTitle = prompt("Enter the form title:");
+    //   if (inputTitle) {
+    //     setFormTitle(inputTitle);
+    //   }
+    // }
   }, []);
 
   useEffect(() => {
-    if (formFields) {
-      setFormElements(formFields);
-      console.log(formFields);
+    if (viewFormFields) {
+      setFormElements(viewFormFields);
     }
-  }, [formFields]);
+
+    if (editFormFields) {
+      setFormElements(editFormFields);
+    }
+  }, [viewFormFields, editFormFields]);
 
   return (
     <>
@@ -343,13 +351,14 @@ const NewForm = () => {
                             </li>
                           ))}
                       </ul>
-
-                      <textarea
-                        placeholder="Enter options (one per line)"
-                        onKeyPress={(event) =>
-                          handleOptionChange(element.id, event)
-                        }
-                      ></textarea>
+                      {!params.formId && (
+                        <textarea
+                          placeholder="Enter options (one per line)"
+                          onKeyPress={(event) =>
+                            handleOptionChange(element.id, event)
+                          }
+                        ></textarea>
+                      )}
                     </div>
                   )}
                   {element.questionType === "radio" && (
@@ -382,12 +391,14 @@ const NewForm = () => {
                             </li>
                           ))}
                       </ul>
-                      <textarea
-                        placeholder="Enter options (one per line)"
-                        onKeyPress={(event) =>
-                          handleOptionChange(element.id, event)
-                        }
-                      ></textarea>
+                      {!params.formId && (
+                        <textarea
+                          placeholder="Enter options (one per line)"
+                          onKeyPress={(event) =>
+                            handleOptionChange(element.id, event)
+                          }
+                        ></textarea>
+                      )}
                     </div>
                   )}
                   {element.questionType === "dropdown" && (
@@ -399,6 +410,7 @@ const NewForm = () => {
                         >
                           Select
                         </option> */}
+                        {/* Dropdown placeholder test */}
                         {element.questionOptions &&
                           element.questionOptions.map((option, optionIndex) => (
                             <option
@@ -409,12 +421,14 @@ const NewForm = () => {
                             </option>
                           ))}
                       </select>
-                      <textarea
-                        placeholder="Enter options (one per line)"
-                        onKeyPress={(event) =>
-                          handleOptionChange(element.id, event)
-                        }
-                      ></textarea>
+                      {!params.formId && (
+                        <textarea
+                          placeholder="Enter options (one per line)"
+                          onKeyPress={(event) =>
+                            handleOptionChange(element.id, event)
+                          }
+                        ></textarea>
+                      )}
                     </div>
                   )}
                   {!params.formId && (
@@ -431,14 +445,15 @@ const NewForm = () => {
               ))}
               <div className="button-container">
                 {!params.formId && (
-                  <button
-                    className="formButton"
-                    type="button"
-                    id="deleteForm"
-                    onClick={handleDeleteAll}
-                  >
-                    Delete All
-                  </button>
+                  <Link to="/dashboard">
+                    <button
+                      className="formButton"
+                      type="button"
+                      id="saveForm"
+                    >
+                      Save
+                    </button>
+                  </Link>
                 )}
 
                 {!params.formId && (
@@ -448,15 +463,6 @@ const NewForm = () => {
                     id="publishForm"
                   >
                     Publish
-                  </button>
-                )}
-
-                {params.formId && (
-                  <button
-                    className="formButton"
-                    type="submit"
-                  >
-                    Submit
                   </button>
                 )}
               </div>

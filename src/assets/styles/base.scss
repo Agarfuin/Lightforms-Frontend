@@ -31,11 +31,14 @@ img {
 
 a{
   text-decoration: none;
+  color: var(--text-color);
 }
 
 li {
   list-style-type: none;
 }
+
+
 
 .formInput{
   display: flex;

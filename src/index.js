@@ -48,7 +48,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/forms/:formId",
-    id:"quarniyuerrak",
+    id: "viewFormWithId",
     element: <NewForm />,
     // with this data loaded before rendering
     loader: async ({ request, params }) => {
@@ -57,10 +57,25 @@ const router = createBrowserRouter([
     // performing this mutation when data is submitted to it
     action: async ({ request }) => {
       // http://localhost:3000/forms/:byUuid adresinde submit tetiklenirse çalışır
-      console.log(await request.formData());
       return await request.formData();
     },
 
+    // and renders this element in case something went wrong
+    /*  errorElement: <ErrorBoundary />, */
+  },
+  {
+    path: "/forms/:formId/edit",
+    id: "editFormWithId",
+    element: <NewForm />,
+    // with this data loaded before rendering
+    loader: async ({ request, params }) => {
+      return fetchForm(request, params.formId);
+    },
+    // performing this mutation when data is submitted to it
+    action: async ({ request }) => {
+      // http://localhost:3000/forms/:byUuid adresinde submit tetiklenirse çalışır
+      return await request.formData();
+    },
     // and renders this element in case something went wrong
     /*  errorElement: <ErrorBoundary />, */
   },

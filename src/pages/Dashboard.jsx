@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 // Store
 import { useDispatch, useSelector } from "react-redux";
@@ -20,6 +20,8 @@ import {
   MdOutlineSnippetFolder,
   MdOutlineFolderDelete,
   MdOutlineDriveFolderUpload,
+  MdOutlineModeEdit,
+  MdOutlineDelete
 } from "react-icons/md";
 
 const baseURL = "https://api.lightforms.co/api/services";
@@ -30,23 +32,13 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const [currentTab, setCurrentTab] = useState("draft"); // default to draft forms
+  const [currentTab, setCurrentTab] = useState("DRAFT"); // default to draft forms
   const [pageTitle, setPageTitle] = useState("Drafts"); // default to draft forms
 
   const [forms, setForms] = useState({
-    draft: [
-      { id: 1, name: "Form 1" },
-      { id: 2, name: "Form 2" },
-      { id: 3, name: "Form 3" },
-      { id: 4, name: "Form 4" },
-      { id: 5, name: "Form 5" },
-      { id: 6, name: "Form 6" },
-    ], // array of draft forms
-    deleted: [
-      { id: 7, name: "Form 1" },
-      { id: 8, name: "Form 2" },
-    ], // array of deleted forms
-    published: [], // array of published forms
+    DRAFT: [], // array of draft forms
+    DELETED: [], // array of deleted forms
+    PUBLISHED: [], // array of published forms
   });
 
   const handleTabClick = (tab, pageTitle) => {
@@ -54,21 +46,78 @@ const Dashboard = () => {
     setPageTitle(pageTitle);
   };
 
+  const fetchForms = async () => {
+    const token = localStorage.getItem(localStorageTokenKey);
+    const api = `${baseURL}/forms?state=${currentTab}`;
+    const headers = {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    };
+    fetch(api, {
+      method: "GET",
+      headers: headers,
+    })
+      .then((response) => {
+        if (response.status === 200) {
+          return response.json();
+        }
+        throw new Error("Something went wrong");
+      })
+      .then((data) => {
+        setForms({ ...forms, [currentTab]: data });
+      });
+  };
+
+  const handleDeleteForm = async (formIdentifier) => {
+    //DELETE /api/services/forms/id
+    const token = localStorage.getItem(localStorageTokenKey);
+    const headers = {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    };
+    await fetch(`${baseURL}/forms/${formIdentifier}`, {
+      method: "DELETE",
+      headers,
+    });
+    await fetchForms()
+  };
   const renderForms = () => {
     return (
       <ul className="form-list">
         {forms[currentTab].map((form) => (
           <li
-            key={form.id}
+            key={form.formIdentifier}
             className="form-list__item"
           >
-            <div className="form-list__item-img">
-              <img
-                src={FormIcon}
-                alt="form icon"
-              />
-            </div>
-            <span className="form-list__item-name">{form.name}</span>
+            <Link to={`/forms/${form.formIdentifier}`}>
+              <div className="form-list__item-img">
+                <img
+                  src={FormIcon}
+                  alt="form icon"
+                />
+              </div>
+              <span className="form-list__item-name">{form.title}</span>
+            </Link>
+            {currentTab === "DRAFT" && (
+              <div className="form-list__item-actions">
+                <button
+                  className="formEditButton"
+                  onClick={() => {
+                    navigate(`/forms/${form.formIdentifier}/edit`);
+                  }}
+                >
+                  <MdOutlineModeEdit />
+                </button>
+                <button
+                  className="formDeleteButton"
+                  onClick={() => {
+                    handleDeleteForm(form.id);
+                  }}
+                >
+                  <MdOutlineDelete />
+                </button>
+              </div>
+            )}
           </li>
         ))}
       </ul>
@@ -84,31 +133,13 @@ const Dashboard = () => {
   }, []);
 
   useEffect(() => {
-    if (form.id) {
-      navigate("/newForm");
-    }
-  }, [form]);
+    dispatch(setForm({ id: "", title: "", formIdentifier: null }));
+  }, []);
 
-  // useEffect(() => {
-  //   const api = `${baseURL}/users/forms/${currentTab}`; // Replace this with the actual API endpoint for fetching forms
-  //   const headers = {
-  //     "Content-Type": "application/json",
-  //   };
-
-  //   fetch(api, {
-  //     method: "GET",
-  //     headers: headers,
-  //   })
-  //     .then((response) => {
-  //       if (response.status === 200) {
-  //         return response.json();
-  //       }
-  //       throw new Error("Something went wrong");
-  //     })
-  //     .then((data) => {
-  //       setForms({ ...forms, currentTab: data });
-  //     });
-  // }, [currentTab]);
+  useEffect(() => {
+    // GET /api/services/forms?state=FormState, Auth required
+    fetchForms();
+  }, [currentTab]);
 
   return (
     <>
@@ -138,12 +169,12 @@ const Dashboard = () => {
                     }),
                   }).then((response) => {
                     if (response.status === 201) {
-                      navigate("/newForm");
                       return response.json();
                     }
                     throw new Error("Something went wrong");
                   });
                   dispatch(setForm(data));
+                  navigate("/newForm");
                 }
               }}
             >
@@ -154,21 +185,21 @@ const Dashboard = () => {
             <span>My Forms</span>
             <button
               className="draftsButton"
-              onClick={() => handleTabClick("draft", "Drafts")}
+              onClick={() => handleTabClick("DRAFT", "Drafts")}
             >
               <MdOutlineSnippetFolder />
               Drafts
             </button>
             <button
               className="deletedFormsButton"
-              onClick={() => handleTabClick("deleted", "Deleted Forms")}
+              onClick={() => handleTabClick("DELETED", "Deleted Forms")}
             >
               <MdOutlineFolderDelete />
               Deleted Forms
             </button>
             <button
               className="publishedFormsButton"
-              onClick={() => handleTabClick("published", "Published Forms")}
+              onClick={() => handleTabClick("PUBLISHED", "Published Forms")}
             >
               <MdOutlineDriveFolderUpload />
               Published Forms
